@@ -6,6 +6,8 @@ import android.app.Application;
 import com.forradical.binzee.collectionforlisab.utils.ActivityCollector;
 import com.tencent.bugly.Bugly;
 
+import org.litepal.LitePalApplication;
+
 
 /**
  * 自定义Application
@@ -13,7 +15,7 @@ import com.tencent.bugly.Bugly;
  * 集成自定义的Activity管理器，内涵模拟返回栈
  * 可以批量销毁activity
  */
-public class FoxApplication extends Application {
+public class FoxApplication extends LitePalApplication {
 
     private static final String APP_ID = "b1417ceffe";
 

@@ -45,4 +45,6 @@ dependencies {
     //Rx
     implementation 'io.reactivex.rxjava2:rxjava:2.1.16'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    //LitePal
+    implementation 'org.litepal.android:core:2.0.0'
 }

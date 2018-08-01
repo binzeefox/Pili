@@ -1,18 +1,17 @@
 package com.forradical.binzee.collectionforlisab.activities;
 
-import android.app.ActionBar;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.forradical.binzee.collectionforlisab.R;
+import com.forradical.binzee.collectionforlisab.activities.main.MainActivity;
 import com.forradical.binzee.collectionforlisab.base.FoxActivity;
 
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;

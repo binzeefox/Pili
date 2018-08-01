@@ -1,13 +1,14 @@
 package com.forradical.binzee.collectionforlisab.base.mvp;
 
-public abstract class BasePresenter<T extends IBaseView> implements IBasePresenter {
-    protected T view;
+public abstract class BasePresenter<V extends IBaseView, M extends IBaseModel> implements IBasePresenter {
+    protected V view;
+    protected M model;
 
-    public BasePresenter(T view){
+    public BasePresenter(V view){
         onBind(view);
     }
 
-    protected void onBind(T view){
+    protected void onBind(V view){
         this.view = view;
     }
 }

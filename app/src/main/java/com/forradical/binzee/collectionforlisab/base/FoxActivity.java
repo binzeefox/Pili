@@ -34,7 +34,7 @@ public abstract class FoxActivity extends AppCompatActivity {
 
     private static final int PERMISSION_CODE = 0x00;
     private CustomDialogFragment dialogHelper;
-    protected CompositeDisposable dContainer;
+    public CompositeDisposable dContainer;
 
 //    ******↓生命周期
 
