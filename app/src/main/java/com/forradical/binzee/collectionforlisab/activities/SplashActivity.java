@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
 
@@ -37,9 +38,8 @@ public class SplashActivity extends FoxActivity {
 
 
         Glide.with(this).load(R.drawable.devil).into(ivSplash);
-        dContainer.add(Flowable
-                .intervalRange(0, 2500
-                        , 0, 1, TimeUnit.MILLISECONDS)
+        dContainer.add(Observable
+                .timer(2500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnComplete(new Action() {
                     @Override

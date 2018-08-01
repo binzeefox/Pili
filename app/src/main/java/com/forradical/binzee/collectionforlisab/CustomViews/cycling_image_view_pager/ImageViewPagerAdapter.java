@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.forradical.binzee.collectionforlisab.base.litepal.ImageBean;
+import com.forradical.binzee.collectionforlisab.utils.ImageUtil;
 
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ public class ImageViewPagerAdapter extends PagerAdapter {
     private Context mContext;   // 上下文
     private List<ImageBean> data;   // 真正显示的所有图片的列表
     private OnItemClickListener listener;   // 点击监听器
+
+    private boolean isRound = false;    // 是否圆角
 
     public ImageViewPagerAdapter(Context context, List<ImageBean> imageList){
         mContext = context;
@@ -63,6 +66,12 @@ public class ImageViewPagerAdapter extends PagerAdapter {
         final ImageBean bean = data.get(position);
         ImageView view = imgViews.get(position);
         container.addView(view);
+
+        ImageUtil imageUtil = new ImageUtil(mContext, bean.getPath());
+        if (isRound)
+            imageUtil.showRoundImage(view);
+        else
+            imageUtil.show(view);
         Glide.with(mContext).load(bean.getPath()).into(view);
         if (listener != null)
             view.setOnClickListener(new View.OnClickListener() {
@@ -87,6 +96,13 @@ public class ImageViewPagerAdapter extends PagerAdapter {
      */
     public void setOnItemClickListener(OnItemClickListener listener){
         this.listener = listener;
+    }
+
+    /**
+     * 设置是否圆角
+     */
+    public void setRoundImage(boolean isRound){
+        this.isRound = isRound;
     }
 
 //    ******↓点击监听
