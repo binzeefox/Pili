@@ -2,6 +2,7 @@ package com.forradical.binzee.collectionforlisab.base.litepal;
 
 import android.net.Uri;
 
+import org.litepal.annotation.Column;
 import org.litepal.crud.LitePalSupport;
 
 import java.util.ArrayList;
@@ -11,9 +12,10 @@ public class ImageBean extends LitePalSupport {
 
     private static final String TYPE_DEFAULT = "type_default";
 
+    @Column(unique = true)
     private int id;
     private String path;    // 图片路径
-    private String authPath;    // 签名路径
+    private String netUrl;    // 网络路径
     private List<String> typeList = new ArrayList<>();    // 图片标签列表
     private long createTime;    // 完成时间
 
@@ -28,6 +30,14 @@ public class ImageBean extends LitePalSupport {
 
     public String getPath() {
         return path;
+    }
+
+    public String getNetUrl() {
+        return netUrl;
+    }
+
+    public void setNetUrl(String netUrl) {
+        this.netUrl = netUrl;
     }
 
     public void setPath(String path) {

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="request_camera" type="id"/>
+    <item name="request_album" type="id"/>
+    <item name="request_crop" type="id"/>
+    <item name="request_file" type="id"/>
+</resources>

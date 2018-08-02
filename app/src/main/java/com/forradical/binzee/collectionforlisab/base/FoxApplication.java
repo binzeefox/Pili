@@ -25,6 +25,8 @@ public class FoxApplication extends LitePalApplication {
         Bugly.init(this, APP_ID, true);
     }
 
+
+
     // 自定义Activity管理器
     private final static ActivityCollector mCollector = ActivityCollector.get();
 

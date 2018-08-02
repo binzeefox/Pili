@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 
+import com.forradical.binzee.collectionforlisab.R;
 import com.forradical.binzee.collectionforlisab.utils.FileUtil;
 
 import java.io.File;
@@ -29,9 +30,9 @@ import java.io.File;
  */
 public class ImagePickerBottomSheetDialog extends BottomSheetDialog implements View.OnClickListener {
 
-    public static final int REQUEST_CAMERA = 0x00;
-    public static final int REQUEST_ALBUM = 0x01;
-    public static final int REQUEST_CROP = 0x02;
+    public static final int REQUEST_CAMERA = R.id.request_camera;
+    public static final int REQUEST_ALBUM = R.id.request_album;
+    public static final int REQUEST_CROP = R.id.request_crop;
 
     /**
      * 需要在manifest内配置fileProvider

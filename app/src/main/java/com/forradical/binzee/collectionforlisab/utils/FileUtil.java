@@ -1,26 +1,55 @@
 package com.forradical.binzee.collectionforlisab.utils;
 
+import android.app.Activity;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.Toast;
+
+import com.forradical.binzee.collectionforlisab.R;
+import com.forradical.binzee.collectionforlisab.activities.main.MainActivity;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * 文件工具类
- *
+ * <p>
  * 照片存放在/image内，以当前毫秒命名
  * 剪切图存放在/crop
  * 缓存存放在/temp
  */
 public class FileUtil {
+    //文件选取类别
+    public static final String FILE_TYPE_IMAGE = "image/*"; //图片
+    public static final String FILE_TYPE_AUDIO = "audio/*"; //音频
+    public static final String FILE_TYPE_VIDEO = "video/*"; //视频
+    public static final String FILE_TYPE_IMAGE_N_VIDEO = "video/*;image/";  //音频和视频
+    public static final String FILE_TYPE_ALL = "*/*";   //全部类别
+
+    private static final int REQUEST_FILE = R.id.request_file;  //请求文件请求码
+
+    private static final String EXTERNAL_DIR
+            = Environment.getExternalStorageDirectory().getAbsolutePath() + "PIMI";
+    private static final String EXTERNAL_OUTPUT_DB_PATH = EXTERNAL_DIR + "/databases";
+    private static final String EXTERNAL_IMAGE_STORAGE = EXTERNAL_DIR + "/image";
+
+    private static final String DATABASE_DIR = "/databases";
+    private static final String DATABASE_FILE_PATH = DATABASE_DIR + "ImagesGallery.db";
 
     //存储文件AUTH
     private static final String ENTERNAL_STORAGE_AUTHORITY
@@ -40,10 +69,107 @@ public class FileUtil {
 
     //    ****公共方法 ↓
 
+//    /**
+//     * 请求文件
+//     *
+//     * @param ctx  上下文
+//     * @param type 类别
+//     */
+//    public static void requestFile(Activity ctx, @NonNull String type) {
+//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//        intent.setType(type);
+//        intent.addCategory(Intent.CATEGORY_OPENABLE);
+//        ctx.startActivityForResult(intent, REQUEST_FILE);
+//    }
+//
+//    /**
+//     * 处理文件请求结果
+//     * @param requestCode 请求码
+//     * @param resultCode    结果码
+//     * @param data  数据
+//     * @return  文件
+//     */
+//    public static File handleFileResult(int requestCode, int resultCode, Intent data) {
+//        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_FILE) {
+//
+//        }
+//        return null;
+//    }
+
+    /**
+     * 将照片考入指定文件（若有同名文件则删除）
+     *
+     * @param raw 原始文件
+     * @return 是否成功
+     */
+    public static boolean copyImageToEnternal(File raw) {
+        String path = EXTERNAL_IMAGE_STORAGE + "/" + raw.getName();
+        File out = new File(path);
+        if (out.exists())
+            out.delete();
+        try {
+            copyFileUsingFileStreams(raw, out);
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
+    }
+
+//    /**
+//     * 引入外源数据库
+//     *
+//     * @param ctx  上下文
+//     * @param file 外源数据库
+//     * @return 是否成功
+//     */
+//    public static boolean importDBfile(Context ctx, File file) {
+//        if (!file.exists()) {
+//            return false;
+//        }
+//        String path = ctx.getExternalFilesDir(null).getAbsolutePath() + DATABASE_FILE_PATH;
+//        File db = new File(path);
+//        if (db.exists())
+//            db.delete();
+//        try {
+//            db.createNewFile();
+//            copyFileUsingFileStreams(file, db);
+//        } catch (IOException e) {
+//            return false;
+//        }
+//        return true;
+//    }
+//
+//    /**
+//     * 导出外源数据库,导出到
+//     *
+//     * @param ctx 上下文
+//     * @return 是否成功
+//     */
+//    public static boolean outputDBfile(Context ctx) {
+//        String rawPath = ctx.getExternalFilesDir(null).getAbsolutePath() + DATABASE_FILE_PATH;
+//        File raw = new File(rawPath);
+//        if (!raw.exists()) {
+//            return false;
+//        }
+//        File output = new File(EXTERNAL_OUTPUT_DB_PATH
+//                + "ImagesGallery" + System.currentTimeMillis() + ".db");
+//        try {
+//            if (output.exists()) {
+//                output.delete();
+//            }
+//            output.createNewFile();
+//            copyFileUsingFileStreams(raw, output);
+//        } catch (IOException e) {
+//            return false;
+//        }
+//        return true;
+//    }
+
     /**
      * 获取图片临时存储路径
-     * @param context   上下文
-     * @return  路径
+     *
+     * @param context 上下文
+     * @return 路径
      */
     public static String getImageTempPath(Context context) {
         String path = getTempDir(context, "/image");
@@ -61,10 +187,11 @@ public class FileUtil {
 
     /**
      * 获取剪切图缓存路径
-     * @param context   上下文
-     * @return  路径
+     *
+     * @param context 上下文
+     * @return 路径
      */
-    public static String getCropTempPath(Context context){
+    public static String getCropTempPath(Context context) {
         String path = getTempDir(context, "/crop");
         try {
             path += "/" + System.currentTimeMillis() + ".jpg";
@@ -72,7 +199,7 @@ public class FileUtil {
             if (file.exists())
                 file.delete();
             file.createNewFile();
-        }catch (IOException e){
+        } catch (IOException e) {
             path = null;
         }
         return path;
@@ -80,20 +207,21 @@ public class FileUtil {
 
     /**
      * 将本地文件路径转化成FileProvider Uri
-     * @param context   上下文
-     * @param path  原始路径
-     * @return  Uri
+     *
+     * @param context 上下文
+     * @param path    原始路径
+     * @return Uri
      */
-    public static Uri getContentUri(Context context, String path){
+    public static Uri getContentUri(Context context, String path) {
         File imageFile = new File(path);
         Cursor cursor = context.getContentResolver().query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                ,new String[]{MediaStore.Images.Media._ID}
-                ,MediaStore.Images.Media.DATA + "=?"
-                ,new String[]{path}
-                ,null);
+                , new String[]{MediaStore.Images.Media._ID}
+                , MediaStore.Images.Media.DATA + "=?"
+                , new String[]{path}
+                , null);
 
-        if (cursor != null && cursor.moveToFirst()){
+        if (cursor != null && cursor.moveToFirst()) {
             //如果已经存在于Provider，则利用id直接生成Uri
             int id = cursor
                     .getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
@@ -101,40 +229,41 @@ public class FileUtil {
             cursor.close();
             return Uri.withAppendedPath(baseUri, "" + id);
         } else {
-            if (imageFile.exists()){
+            if (imageFile.exists()) {
                 //如果文件存在于本地，则将其存入Provider
                 ContentValues values = new ContentValues();
                 values.put(MediaStore.Images.Media.DATA, path);
                 return context.getContentResolver()
                         .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-            }else //图片不存在
+            } else //图片不存在
                 return null;
         }
     }
 
     /**
      * 通过相册Uri获取图片文件
-     * @param rawUri    相册返回的uri
-     * @return  目标文件
+     *
+     * @param rawUri 相册返回的uri
+     * @return 目标文件
      */
     public static File getImageFileFromUri(Context context, Uri rawUri) {
-        if (DocumentsContract.isDocumentUri(context, rawUri)){
+        if (DocumentsContract.isDocumentUri(context, rawUri)) {
             //若为Document类型，则通过document id处理
             String docId = DocumentsContract.getDocumentId(rawUri);
-            if (MEDIA_AUTHORITY.equals(rawUri.getAuthority())){
+            if (MEDIA_AUTHORITY.equals(rawUri.getAuthority())) {
                 String id = docId.split(":")[1];
                 String selection = MediaStore.Images.Media._ID + "=" + id;
                 return getFileFromSelection
                         (context, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection);
-            } else if (DOWNLOAD_AUTHORITY.equals(rawUri.getAuthority())){
+            } else if (DOWNLOAD_AUTHORITY.equals(rawUri.getAuthority())) {
                 Uri contentUri = ContentUris
                         .withAppendedId(Uri.parse(DOWNLOAD_URI), Long.valueOf(docId));
                 return getFileFromSelection(context, contentUri, null);
             }
-        } else if ("content".equalsIgnoreCase(rawUri.getScheme())){
+        } else if ("content".equalsIgnoreCase(rawUri.getScheme())) {
             //content类型URI，按照普通方式处理
             return getFileFromSelection(context, rawUri, null);
-        } else if (("file".equalsIgnoreCase(rawUri.getScheme()))){
+        } else if (("file".equalsIgnoreCase(rawUri.getScheme()))) {
             //文件类型uri，直接获取
             return new File(rawUri.getPath());
         }
@@ -182,5 +311,30 @@ public class FileUtil {
             cursor.close();
         }
         return new File(path);
+    }
+
+    /**
+     * 复制文件
+     *
+     * @param source 源文件
+     * @param dest   目标文件夹
+     * @throws IOException
+     */
+    private static void copyFileUsingFileStreams(File source, File dest)
+            throws IOException {
+        InputStream input = null;
+        OutputStream output = null;
+        try {
+            input = new FileInputStream(source);
+            output = new FileOutputStream(dest);
+            byte[] buf = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = input.read(buf)) > 0) {
+                output.write(buf, 0, bytesRead);
+            }
+        } finally {
+            input.close();
+            output.close();
+        }
     }
 }

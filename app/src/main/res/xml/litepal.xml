@@ -2,9 +2,12 @@
 
 <litepal>
     <dbname value="ImagesGallery"/>
-    <version value="1"/>
+    <version value="2"/>
 
     <list>
         <mapping class="com.forradical.binzee.collectionforlisab.base.litepal.ImageBean"/>
     </list>
+
+    <!--/storage/sdcard1/Android/data/应用包名/files/databases-->
+    <!--<storage value="external" />-->
 </litepal>
