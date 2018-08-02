@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 
-import com.forradical.binzee.collectionforlisab.CustomViews.CustomDialogFragment;
+import com.forradical.binzee.collectionforlisab.views.CustomDialogFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;

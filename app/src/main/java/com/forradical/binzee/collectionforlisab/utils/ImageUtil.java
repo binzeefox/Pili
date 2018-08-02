@@ -21,6 +21,15 @@ public class ImageUtil {
                 .transforms(transformation);
     }
 
+    public ImageUtil(Context ctx, int resource){
+        mGlide = Glide.with(ctx).load(resource);
+
+        UsefulTransformation transformation = new UsefulTransformation(ctx, UsefulTransformation.OPTION_ROUND);
+        transformation.setRoundRadius(20);
+        roundOptions = new RequestOptions()
+                .transforms(transformation);
+    }
+
     /**
      * 显示圆角图片
      * @param view  目标部件

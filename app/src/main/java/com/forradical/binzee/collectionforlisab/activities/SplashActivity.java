@@ -45,6 +45,7 @@ public class SplashActivity extends FoxActivity {
                     @Override
                     public void run() throws Exception {
                         navigate(MainActivity.class);
+                        finish();
                     }
                 })
                 .subscribe()

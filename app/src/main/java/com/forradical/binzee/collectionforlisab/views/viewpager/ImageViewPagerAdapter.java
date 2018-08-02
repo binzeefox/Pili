@@ -1,4 +1,4 @@
-package com.forradical.binzee.collectionforlisab.CustomViews.cycling_image_view_pager;
+package com.forradical.binzee.collectionforlisab.views.viewpager;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -7,11 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.forradical.binzee.collectionforlisab.base.litepal.ImageBean;
 import com.forradical.binzee.collectionforlisab.utils.ImageUtil;
 
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +43,7 @@ public class ImageViewPagerAdapter extends PagerAdapter {
             ImageView view = new ImageView(mContext);
             view.setLayoutParams(new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            view.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//            view.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imgViews.add(view);
         }
     }
@@ -67,12 +65,22 @@ public class ImageViewPagerAdapter extends PagerAdapter {
         ImageView view = imgViews.get(position);
         container.addView(view);
 
-        ImageUtil imageUtil = new ImageUtil(mContext, bean.getPath());
-        if (isRound)
-            imageUtil.showRoundImage(view);
-        else
-            imageUtil.show(view);
-        Glide.with(mContext).load(bean.getPath()).into(view);
+        if (bean.getPath() != null) {
+            ImageUtil imageUtil = new ImageUtil(mContext, bean.getPath());
+            if (isRound) {
+                imageUtil.showRoundImage(view);
+            } else {
+                imageUtil.show(view);
+            }
+        } else {
+            //TODO 测试用轮播图资源，正式使用的是Uri，这句会被移除
+            ImageUtil imageUtil = new ImageUtil(mContext, (int) bean.getCreateTime());
+            if (isRound) {
+                imageUtil.showRoundImage(view);
+            } else {
+                imageUtil.show(view);
+            }
+        }
         if (listener != null)
             view.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -1,4 +1,4 @@
-package com.forradical.binzee.collectionforlisab.CustomViews;
+package com.forradical.binzee.collectionforlisab.views;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

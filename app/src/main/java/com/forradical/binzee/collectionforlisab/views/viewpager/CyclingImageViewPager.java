@@ -1,11 +1,14 @@
-package com.forradical.binzee.collectionforlisab.CustomViews.cycling_image_view_pager;
+package com.forradical.binzee.collectionforlisab.views.viewpager;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
+import android.util.AttributeSet;
 
 import com.forradical.binzee.collectionforlisab.base.FoxActivity;
 import com.forradical.binzee.collectionforlisab.base.litepal.ImageBean;
+import com.forradical.binzee.collectionforlisab.utils.RxHelp;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -17,8 +20,20 @@ import io.reactivex.functions.Consumer;
 public class CyclingImageViewPager extends ViewPager {
     private ImageViewPagerAdapter mAdapter;
 
-    public CyclingImageViewPager(@NonNull Context context, List<ImageBean> data) {
-        super(context);
+    public CyclingImageViewPager(@NonNull Context context) {
+        super(context, null);
+    }
+
+    public CyclingImageViewPager(@NonNull Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    /**
+     * 设置数据
+     * @param context 上下文
+     * @param data  数据
+     */
+    public void setData(Context context, List<ImageBean> data){
         mAdapter = new ImageViewPagerAdapter(context, data);
         setAdapter(mAdapter);
 
@@ -56,8 +71,11 @@ public class CyclingImageViewPager extends ViewPager {
      * 开启循环
      */
     public void beginCycling(){
+        if (mAdapter == null)
+            throw new IllegalStateException("Call 'setData' first!!!");
         Disposable disposable = Observable
                 .interval(3000L, 4500L, TimeUnit.MILLISECONDS)
+                .compose(RxHelp.<Long>applySchedulers())
                 .subscribe(new Consumer<Long>() {
                     @Override
                     public void accept(Long aLong) throws Exception {
@@ -70,5 +88,9 @@ public class CyclingImageViewPager extends ViewPager {
                     }
                 });
         ((FoxActivity)getContext()).dContainer.add(disposable);
+    }
+
+    public void setRound(boolean isRound){
+        mAdapter.setRoundImage(isRound);
     }
 }

@@ -1,4 +1,4 @@
-package com.forradical.binzee.collectionforlisab.CustomViews;
+package com.forradical.binzee.collectionforlisab.views;
 
 import android.app.Activity;
 import android.content.Intent;
