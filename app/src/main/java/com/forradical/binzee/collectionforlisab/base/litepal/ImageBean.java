@@ -14,10 +14,12 @@ public class ImageBean extends LitePalSupport {
 
     @Column(unique = true)
     private int id;
+    private String title;   // 图片名称
     private String path;    // 图片路径
     private String netUrl;    // 网络路径
     private List<String> typeList = new ArrayList<>();    // 图片标签列表
     private long createTime;    // 完成时间
+    private String comment;
 
     public ImageBean(String path) {
         this.path = path;
@@ -26,6 +28,14 @@ public class ImageBean extends LitePalSupport {
 
     public int getId() {
         return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getPath() {
@@ -60,7 +70,15 @@ public class ImageBean extends LitePalSupport {
         this.createTime = createTime;
     }
 
-//    ******↓公共方法
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    //    ******↓公共方法
 
     /**
      * 添加类别

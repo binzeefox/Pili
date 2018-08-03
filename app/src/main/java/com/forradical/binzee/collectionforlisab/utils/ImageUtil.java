@@ -9,6 +9,8 @@ import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.request.RequestOptions;
 
 public class ImageUtil {
+//    public static final String HOLDER_URL = "https://fakeimg.pl/200x100/?retina=1&text=PIMI%20!%20!&font=noto";
+
     private RequestBuilder<Drawable> mGlide;
     private RequestOptions roundOptions;
 

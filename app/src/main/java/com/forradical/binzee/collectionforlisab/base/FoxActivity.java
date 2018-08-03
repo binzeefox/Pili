@@ -4,16 +4,21 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 
+import com.forradical.binzee.collectionforlisab.R;
 import com.forradical.binzee.collectionforlisab.views.CustomDialogFragment;
 
 import java.util.ArrayList;
@@ -31,10 +36,11 @@ import io.reactivex.disposables.CompositeDisposable;
  * 封装跳转
  */
 public abstract class FoxActivity extends AppCompatActivity {
+    public CompositeDisposable dContainer;
+    protected Toolbar toolbar;
 
     private static final int PERMISSION_CODE = 0x00;
     private CustomDialogFragment dialogHelper;
-    public CompositeDisposable dContainer;
 
 //    ******↓生命周期
 
@@ -43,10 +49,34 @@ public abstract class FoxActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getFoxApplication().registerActivity(this);
         dContainer = new CompositeDisposable();
-        setContentView(onInflateLayout());
-        //TODO ButterKnife Binder here...
+        setContentView(R.layout.activity_base);
+        //设置工具栏
+        toolbar = setToolbar();
+        toolbar.setVisibility(isShowToolbar() ? View.VISIBLE : View.GONE);
+        if (toolbar != null){
+            setSupportActionBar(toolbar);
+        }
+        //设置沉浸式
+        if (isFullScreen() && Build.VERSION.SDK_INT >= 21) {
+            View decorView = getWindow().getDecorView();
+            int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            decorView.setSystemUiVisibility(option);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        } else {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.transparentWhite));
+        }
+        //设置布局
+        View contentView = getLayoutInflater().inflate(onInflateLayout(), null);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT
+                ,ViewGroup.LayoutParams.MATCH_PARENT);
+        addContentView(contentView, params);
+
+        // ButterKnife Binder here...
         ButterKnife.bind(this);
 
+        // 代理onCreate
         create(savedInstanceState);
         //Check and request permission
         List<String> permissionList = getPermissionList(onCheckPermission());
@@ -112,6 +142,27 @@ public abstract class FoxActivity extends AppCompatActivity {
 //    ******↓继承方法
 
     /**
+     * 是否显示toolbar
+     */
+    protected boolean isShowToolbar(){
+        return true;
+    }
+
+    /**
+     * 设置toolbar
+     */
+    protected Toolbar setToolbar(){
+        return findViewById(R.id.base_tool_bar);
+    }
+
+    /**
+     * 是否沉浸
+     */
+    protected boolean isFullScreen(){
+        return false;
+    }
+
+    /**
      * 加载布局
      *
      * @return 布局资源id
@@ -172,7 +223,7 @@ public abstract class FoxActivity extends AppCompatActivity {
      * @return 尚未通过的权限
      */
     @TargetApi(Build.VERSION_CODES.M)
-    private List<String> checkSelfPermissions(List<String> permissions) {
+    protected List<String> checkSelfPermissions(List<String> permissions) {
         List<String> failedList = new ArrayList<>();
         for (String permission : permissions)
             if (PackageManager.PERMISSION_GRANTED != checkSelfPermission(permission))
@@ -184,8 +235,8 @@ public abstract class FoxActivity extends AppCompatActivity {
      * 请求动态权限
      */
     @TargetApi(Build.VERSION_CODES.M)
-    private void requestSelfPermissions(List<String> permissions) {
-        if (permissions == null)
+    protected void requestSelfPermissions(List<String> permissions) {
+        if (permissions == null || permissions.isEmpty())
             return;
         String[] requests = new String[permissions.size()];
         for (int i = 0; i < permissions.size(); i++)

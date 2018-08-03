@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.forradical.binzee.collectionforlisab.R;
 import com.forradical.binzee.collectionforlisab.base.litepal.ImageBean;
 import com.forradical.binzee.collectionforlisab.utils.ImageUtil;
 
@@ -33,10 +34,13 @@ public class ImageViewPagerAdapter extends PagerAdapter {
      * @param imageList 原始图片列表
      */
     private void convertViews(List<ImageBean> imageList) {
-        data.add(imageList.get(imageList.size() - 1));
-        data.addAll(imageList);
-        data.add(imageList.get(0));
-
+        if (imageList == null || imageList.isEmpty()){
+            data.add(new ImageBean(null));
+        }else {
+            data.add(imageList.get(imageList.size() - 1));
+            data.addAll(imageList);
+            data.add(imageList.get(0));
+        }
 
         // 为每一张图片准备一个ImageViews
         for (ImageBean bean : data){
@@ -73,8 +77,8 @@ public class ImageViewPagerAdapter extends PagerAdapter {
                 imageUtil.show(view);
             }
         } else {
-            //TODO 测试用轮播图资源，正式使用的是Uri，这句会被移除
-            ImageUtil imageUtil = new ImageUtil(mContext, (int) bean.getCreateTime());
+            //当数据源为空时，显示占位图
+            ImageUtil imageUtil = new ImageUtil(mContext, R.drawable.placeholder);
             if (isRound) {
                 imageUtil.showRoundImage(view);
             } else {

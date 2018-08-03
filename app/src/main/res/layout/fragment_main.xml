@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nsv_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.forradical.binzee.collectionforlisab.views.viewpager.CyclingImageViewPager
+                android:id="@+id/cycling_view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_gallery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_add"
+        android:src="@drawable/add"
+        app:layout_behavior="@string/bottom_sheet_behavior"
+        app:layout_anchor="@id/nsv_root"
+        app:layout_anchorGravity="bottom|end"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        app:fabSize="normal"
+        android:layout_height="55dp"
+        android:layout_width="55dp" />
+</android.support.design.widget.CoordinatorLayout>
