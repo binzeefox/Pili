@@ -20,13 +20,14 @@ public class MainGalleryRecyclerViewAdapter extends RecyclerView.Adapter<MainGal
     private Context mContext;
 
     public MainGalleryRecyclerViewAdapter(Context context, List<ImageBean> datas){
+        mContext = context;
         dataList = datas;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(mContext).inflate(R.layout.main_gallery_cards_layout, parent);
+        View v = LayoutInflater.from(mContext).inflate(R.layout.main_gallery_cards_layout, parent, false);
         return new ViewHolder(v);
     }
 
@@ -34,7 +35,8 @@ public class MainGalleryRecyclerViewAdapter extends RecyclerView.Adapter<MainGal
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ImageBean bean = dataList.get(position);
         String title = bean.getTitle();
-        String url = bean.getPath();
+        //TODO 测试数据，应改为 bean.getPath();
+        int url = bean.getId();
         holder.titleField.setText(title);
         Glide.with(mContext).load(url).into(holder.imageField);
     }

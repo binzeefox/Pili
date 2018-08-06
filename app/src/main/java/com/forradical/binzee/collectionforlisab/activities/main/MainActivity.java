@@ -57,8 +57,6 @@ public class MainActivity extends FoxActivity {
 
     @Override
     protected void create(Bundle savedInstanceState) {
-        toolbar.setBackgroundColor(getResources().getColor(R.color.transparentWhite));
-
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(), pagesList);
         mainViewPager.setAdapter(adapter);
         mainViewPager.setNestedScrollingEnabled(true);
@@ -73,6 +71,13 @@ public class MainActivity extends FoxActivity {
 
             @Override
             public void onPageScrollStateChanged(int state) {}
+        });
+        tabBar.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                int position = tabList.indexOf(i);
+                mainViewPager.setCurrentItem(position, true);
+            }
         });
     }
 

@@ -63,15 +63,14 @@ public abstract class FoxActivity extends AppCompatActivity {
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
             decorView.setSystemUiVisibility(option);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
-        } else {
-            getWindow().setStatusBarColor(getResources().getColor(R.color.transparentWhite));
         }
         //设置布局
+        ViewGroup container = findViewById(R.id.base_container);
         View contentView = getLayoutInflater().inflate(onInflateLayout(), null);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT
                 ,ViewGroup.LayoutParams.MATCH_PARENT);
-        addContentView(contentView, params);
+        container.addView(contentView, params);
 
         // ButterKnife Binder here...
         ButterKnife.bind(this);

@@ -22,8 +22,9 @@ public class ImageViewPagerAdapter extends PagerAdapter {
 
     private boolean isRound = false;    // 是否圆角
 
-    public ImageViewPagerAdapter(Context context, List<ImageBean> imageList){
+    public ImageViewPagerAdapter(Context context, List<ImageBean> imageList, boolean isRound) {
         mContext = context;
+        this.isRound = isRound;
         imgViews = new ArrayList<>();
         data = new ArrayList<>();
         convertViews(imageList);
@@ -31,19 +32,20 @@ public class ImageViewPagerAdapter extends PagerAdapter {
 
     /**
      * 处理Views
+     *
      * @param imageList 原始图片列表
      */
     private void convertViews(List<ImageBean> imageList) {
-        if (imageList == null || imageList.isEmpty()){
+        if (imageList == null || imageList.isEmpty()) {
             data.add(new ImageBean(null));
-        }else {
+        } else {
             data.add(imageList.get(imageList.size() - 1));
             data.addAll(imageList);
             data.add(imageList.get(0));
         }
 
         // 为每一张图片准备一个ImageViews
-        for (ImageBean bean : data){
+        for (ImageBean bean : data) {
             ImageView view = new ImageView(mContext);
             view.setLayoutParams(new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -69,21 +71,16 @@ public class ImageViewPagerAdapter extends PagerAdapter {
         ImageView view = imgViews.get(position);
         container.addView(view);
 
+        //如果Path为空，显示占位图
         if (bean.getPath() != null) {
             ImageUtil imageUtil = new ImageUtil(mContext, bean.getPath());
-            if (isRound) {
-                imageUtil.showRoundImage(view);
-            } else {
-                imageUtil.show(view);
-            }
+            imageUtil.setRound(isRound);
+            imageUtil.show(view);
         } else {
-            //当数据源为空时，显示占位图
-            ImageUtil imageUtil = new ImageUtil(mContext, R.drawable.placeholder);
-            if (isRound) {
-                imageUtil.showRoundImage(view);
-            } else {
-                imageUtil.show(view);
-            }
+            //TODO 测试数据，应改为 bean.getPath();
+            ImageUtil imageUtil = new ImageUtil(mContext, bean.getId());
+            imageUtil.setRound(isRound);
+            imageUtil.show(view);
         }
         if (listener != null)
             view.setOnClickListener(new View.OnClickListener() {
@@ -106,20 +103,13 @@ public class ImageViewPagerAdapter extends PagerAdapter {
     /**
      * 设置子项点击事件
      */
-    public void setOnItemClickListener(OnItemClickListener listener){
+    public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
-    }
-
-    /**
-     * 设置是否圆角
-     */
-    public void setRoundImage(boolean isRound){
-        this.isRound = isRound;
     }
 
 //    ******↓点击监听
 
-    public interface OnItemClickListener{
+    public interface OnItemClickListener {
         void onClicked(ImageBean bean);
     }
 }

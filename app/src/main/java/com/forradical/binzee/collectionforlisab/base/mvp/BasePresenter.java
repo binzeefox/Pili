@@ -17,7 +17,7 @@ public abstract class BasePresenter<V extends IBaseView, M extends IBaseModel> i
 
     @Override
     public void onDestroy() {
-        if (!dContainer.isDisposed())
+        if (dContainer != null && !dContainer.isDisposed())
             dContainer.dispose();
     }
 }

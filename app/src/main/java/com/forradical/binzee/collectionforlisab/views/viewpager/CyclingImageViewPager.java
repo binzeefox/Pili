@@ -19,6 +19,7 @@ import io.reactivex.functions.Consumer;
 
 public class CyclingImageViewPager extends ViewPager {
     private ImageViewPagerAdapter mAdapter;
+    private boolean mIsScrolling = false;
 
     public CyclingImageViewPager(@NonNull Context context) {
         super(context, null);
@@ -33,8 +34,8 @@ public class CyclingImageViewPager extends ViewPager {
      * @param context 上下文
      * @param data  数据
      */
-    public void setData(Context context, List<ImageBean> data){
-        mAdapter = new ImageViewPagerAdapter(context, data);
+    public void setData(Context context, List<ImageBean> data, boolean isRound){
+        mAdapter = new ImageViewPagerAdapter(context, data, isRound);
         setAdapter(mAdapter);
 
         setCurrentItem(1, false);
@@ -46,22 +47,28 @@ public class CyclingImageViewPager extends ViewPager {
 
             @Override
             public void onPageSelected(int position) {
+
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                int rawMax = mAdapter.getCount();
+                int max = mAdapter.getCount();
 
-                if (state == 0){
+                //滑动结束
+                if (state == ViewPager.SCROLL_STATE_IDLE){
+                    mIsScrolling = false;
                     int position = getCurrentItem();
                     if (position == 0) {
-                        position = rawMax - 2;
+                        position = max - 2;
                         setCurrentItem(position, false);
                     }
-                    if (position == rawMax - 1) {
+                    if (position == max - 1) {
                         position = 1;
                         setCurrentItem(position, false);
                     }
+                }
+                if (state == ViewPager.SCROLL_STATE_DRAGGING) {
+                    mIsScrolling = true;
                 }
             }
         });
@@ -79,6 +86,9 @@ public class CyclingImageViewPager extends ViewPager {
                 .subscribe(new Consumer<Long>() {
                     @Override
                     public void accept(Long aLong) throws Exception {
+                        if (mIsScrolling){
+                            return;
+                        }
                         int cur = getCurrentItem();
                         int max = getAdapter().getCount();
                         cur++;
@@ -88,9 +98,5 @@ public class CyclingImageViewPager extends ViewPager {
                     }
                 });
         ((FoxActivity)getContext()).dContainer.add(disposable);
-    }
-
-    public void setRound(boolean isRound){
-        mAdapter.setRoundImage(isRound);
     }
 }

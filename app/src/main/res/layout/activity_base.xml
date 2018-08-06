@@ -8,8 +8,13 @@
     <android.support.v7.widget.Toolbar
         android:theme="@style/Base.ThemeOverlay.AppCompat.Dark"
         android:id="@+id/base_tool_bar"
+        android:background="@color/colorPrimary"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"/>
 
+    <FrameLayout
+        android:id="@+id/base_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </LinearLayout>
