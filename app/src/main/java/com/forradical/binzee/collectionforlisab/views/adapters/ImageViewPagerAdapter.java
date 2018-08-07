@@ -1,4 +1,4 @@
-package com.forradical.binzee.collectionforlisab.views.viewpager;
+package com.forradical.binzee.collectionforlisab.views.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -49,7 +49,6 @@ public class ImageViewPagerAdapter extends PagerAdapter {
             ImageView view = new ImageView(mContext);
             view.setLayoutParams(new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-//            view.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imgViews.add(view);
         }
     }
@@ -86,7 +85,7 @@ public class ImageViewPagerAdapter extends PagerAdapter {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.onClicked(bean);
+                    listener.onClicked(view, bean);
                 }
             });
 
@@ -110,6 +109,6 @@ public class ImageViewPagerAdapter extends PagerAdapter {
 //    ******↓点击监听
 
     public interface OnItemClickListener {
-        void onClicked(ImageBean bean);
+        void onClicked(View target, ImageBean bean);
     }
 }

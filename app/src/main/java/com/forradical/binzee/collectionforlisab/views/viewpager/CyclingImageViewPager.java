@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import com.forradical.binzee.collectionforlisab.base.FoxActivity;
 import com.forradical.binzee.collectionforlisab.base.litepal.ImageBean;
 import com.forradical.binzee.collectionforlisab.utils.RxHelp;
+import com.forradical.binzee.collectionforlisab.views.adapters.ImageViewPagerAdapter;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -20,6 +21,7 @@ import io.reactivex.functions.Consumer;
 public class CyclingImageViewPager extends ViewPager {
     private ImageViewPagerAdapter mAdapter;
     private boolean mIsScrolling = false;
+    private ViewPagerPointer mPointer;
 
     public CyclingImageViewPager(@NonNull Context context) {
         super(context, null);
@@ -53,11 +55,11 @@ public class CyclingImageViewPager extends ViewPager {
             @Override
             public void onPageScrollStateChanged(int state) {
                 int max = mAdapter.getCount();
+                int position = getCurrentItem();
 
                 //滑动结束
                 if (state == ViewPager.SCROLL_STATE_IDLE){
                     mIsScrolling = false;
-                    int position = getCurrentItem();
                     if (position == 0) {
                         position = max - 2;
                         setCurrentItem(position, false);
@@ -69,6 +71,10 @@ public class CyclingImageViewPager extends ViewPager {
                 }
                 if (state == ViewPager.SCROLL_STATE_DRAGGING) {
                     mIsScrolling = true;
+                }
+                if(state == ViewPager.SCROLL_STATE_SETTLING){
+                    if (mPointer != null)
+                        mPointer.setCurrent(position);
                 }
             }
         });
@@ -98,5 +104,22 @@ public class CyclingImageViewPager extends ViewPager {
                     }
                 });
         ((FoxActivity)getContext()).dContainer.add(disposable);
+    }
+
+    /**
+     * 设置监听器
+     */
+    public void setOnItemClickListener(ImageViewPagerAdapter.OnItemClickListener listener){
+        mAdapter.setOnItemClickListener(listener);
+    }
+
+    /**
+     * 设置图片治时期
+     * @param pointer   指示器
+     */
+    public void setPointer(ViewPagerPointer pointer, boolean clickable){
+        mPointer = pointer;
+        mPointer.setUpViewPager(this, true);
+        mPointer.setClickable(clickable);
     }
 }

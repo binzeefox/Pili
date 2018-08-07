@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -34,19 +35,23 @@ import io.reactivex.disposables.CompositeDisposable;
  * 封装onCreate和动态权限获取
  * 封装了一个弹窗Fragment
  * 封装跳转
+ * 增加前activity的参数全局变量
  */
 public abstract class FoxActivity extends AppCompatActivity {
     public CompositeDisposable dContainer;
     protected Toolbar toolbar;
+    protected Bundle mParams;
 
     private static final int PERMISSION_CODE = 0x00;
     private CustomDialogFragment dialogHelper;
+    private ViewGroup mContainer;
 
 //    ******↓生命周期
 
     @Override
     protected final void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mParams = getIntent().getBundleExtra("params");
         getFoxApplication().registerActivity(this);
         dContainer = new CompositeDisposable();
         setContentView(R.layout.activity_base);
@@ -65,12 +70,12 @@ public abstract class FoxActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
         //设置布局
-        ViewGroup container = findViewById(R.id.base_container);
+        mContainer = findViewById(R.id.base_container);
         View contentView = getLayoutInflater().inflate(onInflateLayout(), null);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT
                 ,ViewGroup.LayoutParams.MATCH_PARENT);
-        container.addView(contentView, params);
+        mContainer.addView(contentView, params);
 
         // ButterKnife Binder here...
         ButterKnife.bind(this);
@@ -151,7 +156,13 @@ public abstract class FoxActivity extends AppCompatActivity {
      * 设置toolbar
      */
     protected Toolbar setToolbar(){
-        return findViewById(R.id.base_tool_bar);
+        Toolbar toolbar =  findViewById(R.id.base_tool_bar);
+        toolbar = configToolbar(toolbar);
+        return toolbar;
+    }
+
+    protected Toolbar configToolbar(Toolbar toolbar){
+        return toolbar;
     }
 
     /**
@@ -306,5 +317,25 @@ public abstract class FoxActivity extends AppCompatActivity {
             return;
         dialogHelper.dismiss();
         dialogHelper = null;
+    }
+
+//    ******↓通知相关
+
+    protected Snackbar getSnackbar(CharSequence message){
+        if (FoxApplication.mSnackbar != null){
+            FoxApplication.mSnackbar.setText(message).setAction(null, null);
+        }else {
+            FoxApplication.mSnackbar = Snackbar.make(mContainer, message, Snackbar.LENGTH_LONG);
+        }
+        return FoxApplication.mSnackbar;
+    }
+
+    protected Snackbar getSnackbar(int resource){
+        if (FoxApplication.mSnackbar != null){
+            FoxApplication.mSnackbar.setText(resource).setAction(null, null);
+        }else {
+            FoxApplication.mSnackbar = Snackbar.make(mContainer, resource, Snackbar.LENGTH_LONG);
+        }
+        return FoxApplication.mSnackbar;
     }
 }

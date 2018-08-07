@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <android.support.v4.widget.NestedScrollView
@@ -17,14 +16,28 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.forradical.binzee.collectionforlisab.views.viewpager.CyclingImageViewPager
-                android:id="@+id/cycling_view_pager"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
+            <RelativeLayout
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp" />
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.forradical.binzee.collectionforlisab.views.viewpager.CyclingImageViewPager
+                    android:id="@+id/cycling_view_pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"/>
+
+                <com.forradical.binzee.collectionforlisab.views.viewpager.ViewPagerPointer
+                    android:id="@+id/view_pointer_field"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_gallery"
@@ -38,14 +51,14 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_add"
-        android:src="@drawable/add"
-        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
-        app:layout_anchor="@id/nsv_root"
-        app:layout_anchorGravity="bottom|end"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
+        android:src="@drawable/add"
         app:fabSize="mini"
-        android:layout_height="40dp"
-        android:layout_width="40dp" />
+        app:layout_anchor="@id/nsv_root"
+        app:layout_anchorGravity="bottom|end"
+        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior" />
 </android.support.design.widget.CoordinatorLayout>

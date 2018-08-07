@@ -2,6 +2,7 @@ package com.forradical.binzee.collectionforlisab.base;
 
 import android.app.Activity;
 import android.app.Application;
+import android.support.design.widget.Snackbar;
 
 import com.forradical.binzee.collectionforlisab.utils.ActivityCollector;
 import com.tencent.bugly.Bugly;
@@ -18,17 +19,22 @@ import org.litepal.LitePalApplication;
 public class FoxApplication extends LitePalApplication {
 
     private static final String APP_ID = "b1417ceffe";
+    private static FoxApplication mInstance;
+    public static Snackbar mSnackbar;
+
+    // 自定义Activity管理器
+    private final static ActivityCollector mCollector = ActivityCollector.get();
+
+    public static FoxApplication getInstance(){
+        return mInstance;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        mInstance = this;
         Bugly.init(this, APP_ID, true);
     }
-
-
-
-    // 自定义Activity管理器
-    private final static ActivityCollector mCollector = ActivityCollector.get();
 
     /**
      * 模拟返回栈注册

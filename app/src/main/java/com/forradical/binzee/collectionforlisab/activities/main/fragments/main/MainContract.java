@@ -9,10 +9,10 @@ import java.util.List;
 
 import io.reactivex.Observable;
 
-public interface MainContract {
+interface MainContract {
     interface View extends IBaseView{
         void showPictures(List<ImageBean> dataList);
-        void showAddWindow();
+        void showAddPictureWindow();
         void notice(String text);
     }
 

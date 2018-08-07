@@ -8,7 +8,7 @@ import java.util.List;
 
 import io.reactivex.Observable;
 
-public class Model implements MainContract.Model {
+class Model implements MainContract.Model {
 
     @Override
     public Observable<List<ImageBean>> getPictures() {

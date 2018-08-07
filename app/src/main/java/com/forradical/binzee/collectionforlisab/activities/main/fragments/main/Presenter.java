@@ -9,7 +9,7 @@ import java.util.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
-public class Presenter extends BasePresenter<MainContract.View, MainContract.Model> implements MainContract.Presenter {
+class Presenter extends BasePresenter<MainContract.View, MainContract.Model> implements MainContract.Presenter {
 
     public Presenter(MainContract.View view) {
         super(view);

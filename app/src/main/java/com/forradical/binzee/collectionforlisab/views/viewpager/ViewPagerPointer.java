@@ -29,14 +29,14 @@ public class ViewPagerPointer extends RadioGroup {
         super(context, attrs);
     }
 
-    public void setUpViewPager(ViewPager viewPager) throws IllegalAccessException {
+    public void setUpViewPager(ViewPager viewPager) {
         setUpViewPager(viewPager, false);
     }
-    public void setUpViewPager(ViewPager viewPager, boolean isInfinal) throws IllegalAccessException {
+    public void setUpViewPager(ViewPager viewPager, boolean isInfinal) {
         mViewPager = viewPager;
         this.isInfinal = isInfinal;
         if (viewPager.getAdapter() == null)
-            throw new IllegalAccessException("ViewPager必须先设置Adapter");
+            throw new IllegalStateException("ViewPager必须先设置Adapter");
         maxItem = mViewPager.getAdapter().getCount();
         if (isInfinal)
             maxItem -= 2;

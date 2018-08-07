@@ -3,6 +3,7 @@ package com.forradical.binzee.collectionforlisab.base;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,4 +47,24 @@ public abstract class FoxFragment extends Fragment {
     protected abstract void create(Bundle savedInstanceState);
 
     protected abstract int onInflateLayout();
+
+    //    ******↓通知相关
+
+    protected Snackbar getSnackbar(CharSequence message){
+        if (FoxApplication.mSnackbar != null){
+            FoxApplication.mSnackbar.setText(message).setAction(null, null);
+        }else {
+            FoxApplication.mSnackbar = Snackbar.make(rootView, message, Snackbar.LENGTH_LONG);
+        }
+        return FoxApplication.mSnackbar;
+    }
+
+    protected Snackbar getSnackbar(int resource){
+        if (FoxApplication.mSnackbar != null){
+            FoxApplication.mSnackbar.setText(resource).setAction(null, null);
+        }else {
+            FoxApplication.mSnackbar = Snackbar.make(rootView, resource, Snackbar.LENGTH_LONG);
+        }
+        return FoxApplication.mSnackbar;
+    }
 }
