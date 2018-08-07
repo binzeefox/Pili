@@ -3,11 +3,13 @@ package com.forradical.binzee.collectionforlisab.views.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.forradical.binzee.collectionforlisab.activities.photodetail.PhotoDetailActivity;
 import com.forradical.binzee.collectionforlisab.base.litepal.ImageBean;
 import com.forradical.binzee.collectionforlisab.utils.ImageUtil;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -37,6 +39,13 @@ public class DetailViewPagerAdapter extends PagerAdapter {
         for (ImageBean bean : data) {
             PhotoView view = new PhotoView(mContext);
             PhotoViewAttacher attacher = new PhotoViewAttacher(view);
+            attacher.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ((PhotoDetailActivity) mContext).onBackPressed();
+                    Log.d("3333333333333", "onBackPressed");
+                }
+            });
             view.setLayoutParams(new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             imgViews.add(view);
