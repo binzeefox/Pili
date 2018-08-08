@@ -5,7 +5,7 @@
     android:layout_marginStart="2dp"
     android:layout_marginEnd="2dp"
     android:layout_marginBottom="4dp"
-    app:cardCornerRadius="16dp"
+    app:cardCornerRadius="2dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -37,8 +37,7 @@
             <TextView
                 android:id="@+id/title_field"
                 android:gravity="center"
-                android:textStyle="bold"
-                android:textSize="24sp"
+                android:textSize="17sp"
                 android:textColor="#dfff"
                 android:background="#4000"
                 android:layout_alignParentBottom="true"

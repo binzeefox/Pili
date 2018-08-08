@@ -20,7 +20,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        
+
+        <!--Bugly相关↓-->
+        <activity
+            android:name="com.tencent.bugly.beta.ui.BetaActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|locale"
+            android:theme="@android:style/Theme.Translucent" />
+
         <!--activities-->
         <activity android:name=".activities.main.MainActivity"/>
 
@@ -32,12 +38,8 @@
             </intent-filter>
         </activity>
 
-            <!--Bugly相关↓-->
-        <activity
-            android:name="com.tencent.bugly.beta.ui.BetaActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize|locale"
-            android:theme="@android:style/Theme.Translucent" />
         <activity android:name=".activities.photodetail.PhotoDetailActivity" />
+        <activity android:name=".activities.addphoto.AddPhotoActivity" />
 
         <!--providers-->
         <provider

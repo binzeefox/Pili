@@ -1,32 +1,27 @@
-package com.forradical.binzee.collectionforlisab.activities.main.fragments.main;
+package com.forradical.binzee.collectionforlisab.activities.addphoto;
 
-import android.net.Uri;
+import android.media.Image;
 
 import com.forradical.binzee.collectionforlisab.base.litepal.ImageBean;
 import com.forradical.binzee.collectionforlisab.base.mvp.IBaseModel;
 import com.forradical.binzee.collectionforlisab.base.mvp.IBasePresenter;
 import com.forradical.binzee.collectionforlisab.base.mvp.IBaseView;
 
+import java.io.File;
 import java.util.List;
 
 import io.reactivex.Observable;
 
-interface MainContract {
+public interface AddPhotoContract {
     interface View extends IBaseView{
-        void refresh(List<ImageBean> dataList);
-        void notice(String text);
-        void onLoading();
-        void onLoaded();
+        void showAddingDialog(Observable<Integer> progressOb);
     }
 
     interface Presenter extends IBasePresenter{
-        void requestPictures();
-        void showDetail(ImageBean bean);
-        void addPicture(ImageBean bean);
+        void savePhotos(List<ImageBean> beanList);
     }
 
     interface Model extends IBaseModel{
-        Observable<List<ImageBean>> getPictures();
-        boolean addPicture(ImageBean bean);
+        Observable<Integer> savePhotos(List<ImageBean> beanList);
     }
 }

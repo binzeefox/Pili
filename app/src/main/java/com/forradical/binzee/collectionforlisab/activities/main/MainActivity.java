@@ -16,6 +16,7 @@ import com.forradical.binzee.collectionforlisab.activities.main.fragments.serach
 import com.forradical.binzee.collectionforlisab.base.FoxActivity;
 import com.forradical.binzee.collectionforlisab.views.CustomDialogFragment;
 import com.forradical.binzee.collectionforlisab.views.adapters.ViewPagerAdapter;
+import com.tencent.bugly.beta.Beta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +58,9 @@ public class MainActivity extends FoxActivity {
 
     @Override
     protected void create(Bundle savedInstanceState) {
+//        Beta.checkUpgrade();
+        toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary));
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(), pagesList);
         mainViewPager.setAdapter(adapter);
         mainViewPager.setNestedScrollingEnabled(true);

@@ -290,7 +290,7 @@ public abstract class FoxActivity extends AppCompatActivity {
     /**
      * 显示网络加载Dialog
      */
-    protected CustomDialogFragment showLoadingDialog(String title, AlertDialog.OnClickListener cancelClickListener) {
+    public CustomDialogFragment showLoadingDialog(String title, AlertDialog.OnClickListener cancelClickListener) {
         if (dialogHelper == null)
             getDialogHelper();
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams
@@ -312,7 +312,7 @@ public abstract class FoxActivity extends AppCompatActivity {
     /**
      * 注销弹窗
      */
-    protected void dismissDialog() {
+    public void dismissDialog() {
         if (dialogHelper == null)
             return;
         dialogHelper.dismiss();
@@ -323,7 +323,7 @@ public abstract class FoxActivity extends AppCompatActivity {
 
     protected Snackbar getSnackbar(CharSequence message){
         if (FoxApplication.mSnackbar != null){
-            FoxApplication.mSnackbar.setText(message).setAction(null, null);
+            FoxApplication.mSnackbar.dismiss();
         }else {
             FoxApplication.mSnackbar = Snackbar.make(mContainer, message, Snackbar.LENGTH_LONG);
         }
@@ -332,7 +332,7 @@ public abstract class FoxActivity extends AppCompatActivity {
 
     protected Snackbar getSnackbar(int resource){
         if (FoxApplication.mSnackbar != null){
-            FoxApplication.mSnackbar.setText(resource).setAction(null, null);
+            FoxApplication.mSnackbar.dismiss();
         }else {
             FoxApplication.mSnackbar = Snackbar.make(mContainer, resource, Snackbar.LENGTH_LONG);
         }

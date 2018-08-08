@@ -30,7 +30,7 @@ public class UsefulTransformation extends BitmapTransformation {
 
     public UsefulTransformation(/*Context context, */int option) {
 //        mContext = context;
-        roundRadius = Resources.getSystem().getDisplayMetrics().density * 4;
+        roundRadius = Resources.getSystem().getDisplayMetrics().density * 2;
         blueRadius = 15.f;
         this.option = option;
     }

@@ -4,6 +4,7 @@
     <item name="request_album" type="id"/>
     <item name="request_crop" type="id"/>
     <item name="request_file" type="id"/>
+    <item name="request_choose" type="id"/>
 
 
     <item name="fragments_tab" type="id"/>

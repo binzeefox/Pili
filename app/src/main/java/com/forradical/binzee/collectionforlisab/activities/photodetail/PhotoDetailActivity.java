@@ -41,7 +41,7 @@ public class PhotoDetailActivity extends FoxActivity {
         exitTransition = ActivityTransition.with(getIntent()).to(vpDetail).duration(175).start(savedInstanceState);
 
         data = mParams.getParcelableArrayList("data");
-        if (data == null){
+        if (data == null) {
             data = new ArrayList<>();
             data.add((ImageBean) mParams.getParcelable("data"));
         }
@@ -54,6 +54,8 @@ public class PhotoDetailActivity extends FoxActivity {
     private void initViews() {
         int position = mParams.getInt("position", 0);
         tvPointer.setVisibility(data.size() > 1 ? View.VISIBLE : View.GONE);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(data.get(position).getTitle());
         String sb = String.valueOf(position + 1) +
                 "/" +
                 data.size();
@@ -61,7 +63,6 @@ public class PhotoDetailActivity extends FoxActivity {
         DetailViewPagerAdapter adapter = new DetailViewPagerAdapter(this, data);
         vpDetail.setAdapter(adapter);
         vpDetail.setCurrentItem(position, false);
-        toolbar.setTitle(data.get(position).getTitle());
         vpDetail.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

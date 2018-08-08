@@ -74,17 +74,16 @@ public class DatabaseHelper {
      * 批量保存图片
      * @param beanList 图片列表
      */
-    public static Observable<Float> saveImages(final List<ImageBean> beanList) {
-        return Observable.create(new ObservableOnSubscribe<Float>() {
+    public static Observable<Integer> saveImages(final List<ImageBean> beanList) {
+        return Observable.create(new ObservableOnSubscribe<Integer>() {
             @Override
-            public void subscribe(ObservableEmitter<Float> emitter) throws Exception {
-                final int max = beanList.size();
-                float progress = 0f;
+            public void subscribe(ObservableEmitter<Integer> emitter) throws Exception {
+                int progress = 0;
                 int fail = 0;
                 for (ImageBean bean : beanList) {
                     if (bean.save()) {
                         progress++;
-                        emitter.onNext(progress / max);
+                        emitter.onNext(progress);
                     } else {
                         fail++;
                     }
@@ -94,7 +93,7 @@ public class DatabaseHelper {
                 else
                     emitter.onError(new SaveImagesException(fail));
             }
-        }).compose(RxHelp.<Float>applySchedulers());
+        }).compose(RxHelp.<Integer>applySchedulers());
     }
 
 //    ******↓自定义异常

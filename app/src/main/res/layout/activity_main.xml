@@ -16,7 +16,9 @@
 
     <RadioGroup
         android:id="@+id/tab_bar"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:theme="@style/Base.ThemeOverlay.AppCompat.Dark"
         android:background="@color/colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize">
@@ -36,21 +38,21 @@
             android:id="@+id/item2"
             android:button="@null"
             android:drawableTop="@drawable/missing_selector"
-            android:text="主页"
+            android:text="待定"
             android:gravity="center"
             android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content" />
 
         <RadioButton
             android:id="@+id/item3"
             android:button="@null"
             android:drawableTop="@drawable/serach_selector"
-            android:text="主页"
+            android:text="搜索"
             android:gravity="center"
             android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content" />
 
         <RadioButton
             android:id="@+id/item4"
@@ -60,16 +62,16 @@
             android:gravity="center"
             android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content" />
 
         <RadioButton
             android:id="@+id/item5"
             android:button="@null"
             android:drawableTop="@drawable/missing_selector"
-            android:text="主页"
+            android:text="待定"
             android:gravity="center"
             android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content" />
     </RadioGroup>
 </LinearLayout>

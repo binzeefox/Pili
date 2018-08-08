@@ -22,6 +22,7 @@ public class CyclingImageViewPager extends ViewPager {
     private ImageViewPagerAdapter mAdapter;
     private boolean mIsScrolling = false;
     private ViewPagerPointer mPointer;
+    private Disposable timer;
 
     public CyclingImageViewPager(@NonNull Context context) {
         super(context, null);
@@ -85,8 +86,9 @@ public class CyclingImageViewPager extends ViewPager {
      */
     public void beginCycling(){
         if (mAdapter == null)
-            throw new IllegalStateException("Call 'setData' first!!!");
-        Disposable disposable = Observable
+//            throw new IllegalStateException("Call 'setData' first!!!");
+            return;
+        timer = Observable
                 .interval(3000L, 4500L, TimeUnit.MILLISECONDS)
                 .compose(RxHelp.<Long>applySchedulers())
                 .subscribe(new Consumer<Long>() {
@@ -103,7 +105,15 @@ public class CyclingImageViewPager extends ViewPager {
                         setCurrentItem(cur);
                     }
                 });
-        ((FoxActivity)getContext()).dContainer.add(disposable);
+        ((FoxActivity)getContext()).dContainer.add(timer);
+    }
+
+    /**
+     * 停止循环
+     */
+    public void stopCycling(){
+        if (timer != null && !timer.isDisposed())
+            timer.dispose();
     }
 
     /**

@@ -76,8 +76,7 @@ public class ImageViewPagerAdapter extends PagerAdapter {
             imageUtil.setRound(isRound);
             imageUtil.show(view);
         } else {
-            //TODO 测试数据，应改为 bean.getPath();
-            ImageUtil imageUtil = new ImageUtil(mContext, bean.getId());
+            ImageUtil imageUtil = new ImageUtil(mContext, R.drawable.placeholder);
             imageUtil.setRound(isRound);
             imageUtil.show(view);
         }

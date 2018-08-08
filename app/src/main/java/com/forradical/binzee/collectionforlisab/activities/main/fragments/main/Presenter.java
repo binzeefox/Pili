@@ -1,11 +1,13 @@
 package com.forradical.binzee.collectionforlisab.activities.main.fragments.main;
 
+import android.util.Log;
+
 import com.forradical.binzee.collectionforlisab.base.litepal.ImageBean;
 import com.forradical.binzee.collectionforlisab.base.mvp.BasePresenter;
 
 import java.util.List;
-import java.util.Observable;
 
+import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
@@ -18,18 +20,29 @@ class Presenter extends BasePresenter<MainContract.View, MainContract.Model> imp
 
     @Override
     public void requestPictures() {
-        Disposable task = model.getPictures().subscribe(new Consumer<List<ImageBean>>() {
+        view.onLoading();
+        model.getPictures().subscribe(new Observer<List<ImageBean>>() {
             @Override
-            public void accept(List<ImageBean> imageBeanList) throws Exception {
-                view.showPictures(imageBeanList);
+            public void onSubscribe(Disposable d) {
+                dContainer.add(d);
             }
-        }, new Consumer<Throwable>() {
+
             @Override
-            public void accept(Throwable throwable) throws Exception {
-                view.notice("获取图片失败");
+            public void onNext(List<ImageBean> beanList) {
+                view.refresh(beanList);
+                Log.d("Presenter.java", "加载到的内容" + beanList.toString());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.onLoaded();
+            }
+
+            @Override
+            public void onComplete() {
+                view.onLoaded();
             }
         });
-        dContainer.add(task);
     }
 
     @Override

@@ -15,7 +15,7 @@ public class ImageUtil {
 
     static {
         transformation = new UsefulTransformation(UsefulTransformation.OPTION_ROUND);
-        transformation.setRoundRadius(20);
+        transformation.setRoundRadius(4);
         roundOptions = new RequestOptions()
                 .transforms(transformation);
     }

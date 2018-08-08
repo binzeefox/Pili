@@ -8,6 +8,7 @@ public abstract class BasePresenter<V extends IBaseView, M extends IBaseModel> i
     protected CompositeDisposable dContainer;
 
     public BasePresenter(V view) {
+        dContainer = new CompositeDisposable();
         onBind(view);
     }
 
