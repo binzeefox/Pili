@@ -5,29 +5,10 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <ImageView
-        tools:src="@drawable/cat1"
-        android:scaleType="centerCrop"
+    <com.forradical.binzee.collectionforlisab.views.AddingPager
+        android:id="@+id/adding_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <LinearLayout
-        android:id="@+id/container"
-        android:background="#8000"
-        android:theme="@style/Base.ThemeOverlay.AppCompat.Dark"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <EditText
-            android:hint="@string/detail_title_hint"
-            android:textSize="24sp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_add"
@@ -38,6 +19,6 @@
         android:layout_marginStart="16dp"
         android:src="@drawable/ic_check_black_24dp"
         app:fabSize="mini"
-        app:layout_anchor="@id/container"
+        app:layout_anchor="@id/adding_pager"
         app:layout_anchorGravity="bottom|end" />
 </android.support.design.widget.CoordinatorLayout>

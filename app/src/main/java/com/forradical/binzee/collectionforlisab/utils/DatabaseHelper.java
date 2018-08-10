@@ -1,5 +1,7 @@
 package com.forradical.binzee.collectionforlisab.utils;
 
+import android.util.Log;
+
 import com.forradical.binzee.collectionforlisab.base.litepal.ImageBean;
 
 import org.litepal.LitePal;
@@ -82,10 +84,12 @@ public class DatabaseHelper {
                 int fail = 0;
                 for (ImageBean bean : beanList) {
                     if (bean.save()) {
+                        Log.d("DatabaseHelper", "保存成功");
                         progress++;
                         emitter.onNext(progress);
                     } else {
                         fail++;
+                        Log.d("DatabaseHelper", "保存成功");
                     }
                 }
                 if (fail == 0)

@@ -19,6 +19,7 @@ import com.forradical.binzee.collectionforlisab.activities.photodetail.PhotoDeta
 import com.forradical.binzee.collectionforlisab.base.FoxActivity;
 import com.forradical.binzee.collectionforlisab.base.FoxFragment;
 import com.forradical.binzee.collectionforlisab.base.litepal.ImageBean;
+import com.forradical.binzee.collectionforlisab.utils.FileUtil;
 import com.forradical.binzee.collectionforlisab.views.GlideImageEngine;
 import com.forradical.binzee.collectionforlisab.views.adapters.ImageViewPagerAdapter;
 import com.forradical.binzee.collectionforlisab.views.adapters.MainGalleryRecyclerViewAdapter;
@@ -30,6 +31,7 @@ import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.internal.entity.CaptureStrategy;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -72,7 +74,6 @@ public class MainFragment extends FoxFragment implements MainContract.View, Main
     protected void create(Bundle savedInstanceState) {
         mPresenter = new Presenter(this);
         refresh(null);
-        mPresenter.requestPictures();
 //        data = getTestData();
 
 
@@ -109,6 +110,7 @@ public class MainFragment extends FoxFragment implements MainContract.View, Main
     @Override
     public void onResume() {
         super.onResume();
+        mPresenter.requestPictures();
         cyclingViewPager.setCurrentItem(breakPosition);
         cyclingViewPager.beginCycling();
         checkNoData();
@@ -141,8 +143,7 @@ public class MainFragment extends FoxFragment implements MainContract.View, Main
         if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
             ArrayList<String> pathList = new ArrayList<>();
             for (Uri uri : Matisse.obtainResult(data)) {
-                String path = uri.getPath();
-                pathList.add(path);
+                pathList.add(FileUtil.getImageFileFromUri(getActivity(), uri).getAbsolutePath());
             }
             final Intent intent = new Intent(getActivity(), AddPhotoActivity.class);
             Bundle bundle = new Bundle();
@@ -194,11 +195,11 @@ public class MainFragment extends FoxFragment implements MainContract.View, Main
             pagerData = null;
             viewPointer.setVisibility(View.GONE);
         } else {
-            Iterator<ImageBean> it = data.iterator();
-            int i = 0;
-            while (it.hasNext() || i < 5) {
-                pagerData.add(it.next());
-                i++;
+            Collections.reverse(data);
+            viewPointer.setVisibility(View.VISIBLE);
+            for (int i = 0; i < 5 && i < dataList.size(); i++) {
+                ImageBean bean = data.get(i);
+                pagerData.add(bean);
             }
         }
         cyclingViewPager.setData(getContext(), pagerData, true);
@@ -224,6 +225,7 @@ public class MainFragment extends FoxFragment implements MainContract.View, Main
         rvGallery.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         rvGallery.setNestedScrollingEnabled(false);
         rvGallery.setOverScrollMode(View.OVER_SCROLL_IF_CONTENT_SCROLLS);
+        checkNoData();
     }
 
     @Override
@@ -260,7 +262,8 @@ public class MainFragment extends FoxFragment implements MainContract.View, Main
 
     @Override
     public void onMoreClick(ImageBean bean) {
-        mPresenter.showDetail(bean);
+//        mPresenter.showDetail(bean);
+        getActivity().openOptionsMenu();
     }
 
     /**

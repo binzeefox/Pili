@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar;
 import com.forradical.binzee.collectionforlisab.utils.ActivityCollector;
 import com.tencent.bugly.Bugly;
 
+import org.litepal.LitePal;
 import org.litepal.LitePalApplication;
 
 
@@ -34,6 +35,7 @@ public class FoxApplication extends LitePalApplication {
         super.onCreate();
         mInstance = this;
         Bugly.init(this, APP_ID, true);
+        LitePal.initialize(this);
     }
 
     /**

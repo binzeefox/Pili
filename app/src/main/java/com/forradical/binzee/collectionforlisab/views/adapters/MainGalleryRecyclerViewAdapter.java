@@ -76,6 +76,14 @@ public class MainGalleryRecyclerViewAdapter extends RecyclerView.Adapter<MainGal
     }
 
     /**
+     * 设置数据
+     */
+    public void setDataList(List<ImageBean> dataList) {
+        this.dataList = dataList;
+        notifyDataSetChanged();
+    }
+
+    /**
      * 子项点击事件监听器
      */
     public void setOnItemClickListener(OnItemClickListener listener) {

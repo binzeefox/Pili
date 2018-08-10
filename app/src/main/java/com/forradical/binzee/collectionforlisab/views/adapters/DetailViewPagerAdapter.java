@@ -1,6 +1,7 @@
 package com.forradical.binzee.collectionforlisab.views.adapters;
 
 import android.content.Context;
+import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
@@ -31,6 +32,10 @@ public class DetailViewPagerAdapter extends PagerAdapter {
         convertViews();
     }
 
+    public ImageBean getBeanByPosition(int position){
+        return data.get(position);
+    }
+
     /**
      * 处理Views
      */
@@ -43,7 +48,6 @@ public class DetailViewPagerAdapter extends PagerAdapter {
                 @Override
                 public void onClick(View view) {
                     ((PhotoDetailActivity) mContext).onBackPressed();
-                    Log.d("3333333333333", "onBackPressed");
                 }
             });
             view.setLayoutParams(new ViewGroup.LayoutParams(

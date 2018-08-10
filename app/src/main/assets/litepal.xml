@@ -2,7 +2,7 @@
 
 <litepal>
     <dbname value="ImagesGallery"/>
-    <version value="3"/>
+    <version value="4"/>
 
     <list>
         <mapping class="com.forradical.binzee.collectionforlisab.base.litepal.ImageBean"/>

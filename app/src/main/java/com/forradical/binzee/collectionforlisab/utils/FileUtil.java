@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.forradical.binzee.collectionforlisab.R;
 import com.forradical.binzee.collectionforlisab.activities.main.MainActivity;
+import com.forradical.binzee.collectionforlisab.base.FoxApplication;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,6 +48,8 @@ public class FileUtil {
             = Environment.getExternalStorageDirectory().getAbsolutePath() + "PIMI";
     private static final String EXTERNAL_OUTPUT_DB_PATH = EXTERNAL_DIR + "/databases";
     private static final String EXTERNAL_IMAGE_STORAGE = EXTERNAL_DIR + "/image";
+    private static final String EXTERNAL_APP_IMAGE_DIR = FoxApplication.getInstance()
+            .getApplicationContext().getExternalFilesDir("image").getAbsolutePath();
 
     private static final String DATABASE_DIR = "/databases";
     private static final String DATABASE_FILE_PATH = DATABASE_DIR + "ImagesGallery.db";
@@ -102,7 +105,7 @@ public class FileUtil {
      * @param raw 原始文件
      * @return 是否成功
      */
-    public static boolean copyImageToEnternal(File raw) {
+    public static String copyImageToEnternal(File raw) {
         String path = EXTERNAL_IMAGE_STORAGE + "/" + raw.getName();
         File out = new File(path);
         if (out.exists())
@@ -110,9 +113,29 @@ public class FileUtil {
         try {
             copyFileUsingFileStreams(raw, out);
         } catch (IOException e) {
-            return false;
+            return null;
         }
-        return true;
+        return path;
+    }
+
+    /**
+     * 将照片考入应用文件夹（若有同名文件则删除）
+     *
+     * @param raw 原始文件
+     * @return 路径
+     */
+    public static String copyImage(File raw) {
+        String path = EXTERNAL_APP_IMAGE_DIR + "/" + raw.getName();
+        File out = new File(path);
+        if (out.exists())
+            out.delete();
+        try {
+            out.createNewFile();
+            copyFileUsingFileStreams(raw, out);
+        } catch (IOException e) {
+            return null;
+        }
+        return path;
     }
 
 //    /**
@@ -332,6 +355,8 @@ public class FileUtil {
             while ((bytesRead = input.read(buf)) > 0) {
                 output.write(buf, 0, bytesRead);
             }
+        }catch (Exception e){
+            e.printStackTrace();
         } finally {
             input.close();
             output.close();

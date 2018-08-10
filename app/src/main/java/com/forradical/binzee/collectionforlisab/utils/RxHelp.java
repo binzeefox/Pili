@@ -3,7 +3,9 @@ package com.forradical.binzee.collectionforlisab.utils;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -24,5 +26,18 @@ public class RxHelp {
                         .observeOn(AndroidSchedulers.mainThread());
             }
         };
+    }
+
+    public static abstract class CompleteObserver<T> implements Observer<T>{
+
+        @Override
+        public void onError(Throwable e) {
+            e.printStackTrace();
+        }
+
+        @Override
+        public void onNext(T t) {
+
+        }
     }
 }

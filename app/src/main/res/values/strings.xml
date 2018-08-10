@@ -5,6 +5,6 @@
     <string name="icon_menu_detail">详情</string>
 
     <!--AddPhotoActivity-->
-    <string name="detail_title_hint">请输入图片名称</string>
+    <string name="adding_title_hint">请输入图片名称</string>
     <string name="main_fragment_data_holder">请添加您的第一张图片</string>
 </resources>

@@ -42,6 +42,7 @@ public class ViewPagerPointer extends RadioGroup {
             maxItem -= 2;
 
         mButtonList = new ArrayList<>();
+        removeAllViews();
         RadioButton rbt;
         RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);

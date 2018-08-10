@@ -15,6 +15,7 @@ import android.support.annotation.NonNull;
 
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+import com.forradical.binzee.collectionforlisab.base.FoxApplication;
 
 import java.security.MessageDigest;
 
@@ -25,13 +26,15 @@ public class UsefulTransformation extends BitmapTransformation {
 
     private static float roundRadius = 0f;
     private static float blueRadius = 0f;
-//    private Context mContext;
     private int option;
 
-    public UsefulTransformation(/*Context context, */int option) {
+    /**
+     * 构造器
+     */
+    public UsefulTransformation(int option) {
 //        mContext = context;
         roundRadius = Resources.getSystem().getDisplayMetrics().density * 2;
-        blueRadius = 15.f;
+        blueRadius = 10.f;
         this.option = option;
     }
 
@@ -40,8 +43,8 @@ public class UsefulTransformation extends BitmapTransformation {
         switch (option) {
             case OPTION_ROUND:
                 return roundCrop(pool, toTransform);
-//            case OPTION_BLUE:
-//                return blueBitmap(pool, toTransform);
+            case OPTION_BLUE:
+                return blueBitmap(pool, toTransform);
             default:
                 return null;
         }
@@ -95,36 +98,35 @@ public class UsefulTransformation extends BitmapTransformation {
         return result;
     }
 
-//    /**
-//     * 高斯模糊
-//     */
-//    private Bitmap blueBitmap(BitmapPool pool, Bitmap bitmap) {
-//        if (bitmap == null) return null;
-//        Bitmap outBitmap = pool.get(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-//        if (bitmap == null) {
-//            bitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-//        }
-//        //用需要创建高斯模糊bitmap创建一个空的bitmap
-//        // 初始化Renderscript，该类提供了RenderScript context，创建其他RS类之前必须先创建这个类，其控制RenderScript的初始化，资源管理及释放
-//        RenderScript rs = RenderScript.create(mContext);
-//        // 创建高斯模糊对象
-//        //TODO 搞懂这一句
-//        ScriptIntrinsicBlur blurScript = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
-//        // 创建Allocations，此类是将数据传递给RenderScript内核的主要方法，并制定一个后备类型存储给定类型
-//        Allocation allIn = Allocation.createFromBitmap(rs, bitmap);
-//        Allocation allOut = Allocation.createFromBitmap(rs, outBitmap);
-//        //设定模糊度(注：Radius最大只能设置25.f)
-//        blurScript.setRadius(blueRadius);
-//        // Perform the Renderscript
-//        blurScript.setInput(allIn);
-//        blurScript.forEach(allOut);
-//        // Copy the final bitmap created by the out Allocation to the outBitmap
-//        allOut.copyTo(outBitmap);
-//        // recycle the original bitmap
-//        // bitmap.recycle();
-//        // After finishing everything, we destroy the Renderscript.
-//        rs.destroy();
-//        return outBitmap;
-//    }
-
+    /**
+     * 高斯模糊
+     */
+    private Bitmap blueBitmap(BitmapPool pool, Bitmap bitmap) {
+        if (bitmap == null) return null;
+        Bitmap outBitmap = pool.get(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        if (bitmap == null) {
+            bitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        }
+        //用需要创建高斯模糊bitmap创建一个空的bitmap
+        // 初始化Renderscript，该类提供了RenderScript context，创建其他RS类之前必须先创建这个类，其控制RenderScript的初始化，资源管理及释放
+        RenderScript rs = RenderScript.create(FoxApplication.getContext());
+        // 创建高斯模糊对象
+        //TODO 搞懂这一句
+        ScriptIntrinsicBlur blurScript = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+        // 创建Allocations，此类是将数据传递给RenderScript内核的主要方法，并制定一个后备类型存储给定类型
+        Allocation allIn = Allocation.createFromBitmap(rs, bitmap);
+        Allocation allOut = Allocation.createFromBitmap(rs, outBitmap);
+        //设定模糊度(注：Radius最大只能设置25.f)
+        blurScript.setRadius(blueRadius);
+        // Perform the Renderscript
+        blurScript.setInput(allIn);
+        blurScript.forEach(allOut);
+        // Copy the final bitmap created by the out Allocation to the outBitmap
+        allOut.copyTo(outBitmap);
+        // recycle the original bitmap
+        // bitmap.recycle();
+        // After finishing everything, we destroy the Renderscript.
+        rs.destroy();
+        return outBitmap;
+    }
 }
