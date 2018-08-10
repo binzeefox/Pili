@@ -3,6 +3,7 @@ package com.forradical.binzee.collectionforlisab.views;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ImageView;
 
 public class ResizableImageView extends android.support.v7.widget.AppCompatImageView {
@@ -33,9 +34,11 @@ public class ResizableImageView extends android.support.v7.widget.AppCompatImage
         int width = MeasureSpec.getSize(widthMeasureSpec); //高度根据使得图片的宽度充满屏幕计算而得
         if (d != null) {
             int height = (int) Math.ceil((float) width * (float) d.getIntrinsicHeight() / (float) d.getIntrinsicWidth());
+            Log.d("ResizableImageViewWithP", "宽" + width + "高" + height);
             setMeasuredDimension(width, height);
         } else if (ratio > 0){
             int height = (int) (width * ratio);
+            Log.d("ResizableImageViewNoP", "宽" + width + "高" + height);
             setMeasuredDimension(width, height);
         } else {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);

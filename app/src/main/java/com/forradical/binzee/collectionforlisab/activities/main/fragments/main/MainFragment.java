@@ -1,5 +1,6 @@
 package com.forradical.binzee.collectionforlisab.activities.main.fragments.main;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
@@ -8,9 +9,9 @@ import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.forradical.binzee.collectionforlisab.R;
@@ -19,8 +20,11 @@ import com.forradical.binzee.collectionforlisab.activities.photodetail.PhotoDeta
 import com.forradical.binzee.collectionforlisab.base.FoxActivity;
 import com.forradical.binzee.collectionforlisab.base.FoxFragment;
 import com.forradical.binzee.collectionforlisab.base.litepal.ImageBean;
+import com.forradical.binzee.collectionforlisab.utils.DatabaseHelper;
 import com.forradical.binzee.collectionforlisab.utils.FileUtil;
+import com.forradical.binzee.collectionforlisab.views.CustomDialogFragment;
 import com.forradical.binzee.collectionforlisab.views.GlideImageEngine;
+import com.forradical.binzee.collectionforlisab.views.PictureDetailDialog;
 import com.forradical.binzee.collectionforlisab.views.adapters.ImageViewPagerAdapter;
 import com.forradical.binzee.collectionforlisab.views.adapters.MainGalleryRecyclerViewAdapter;
 import com.forradical.binzee.collectionforlisab.views.viewpager.CyclingImageViewPager;
@@ -32,13 +36,10 @@ import com.zhihu.matisse.internal.entity.CaptureStrategy;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -64,6 +65,7 @@ public class MainFragment extends FoxFragment implements MainContract.View, Main
     private List<ImageBean> data;
 
     private MainContract.Presenter mPresenter;
+    private MainGalleryRecyclerViewAdapter adapter;
 
     @Override
     protected int onInflateLayout() {
@@ -84,7 +86,7 @@ public class MainFragment extends FoxFragment implements MainContract.View, Main
 //        pagerData.add(data.get(2));
 //        pagerData.add(data.get(3));
 //        pagerData.add(data.get(4));
-//        cyclingViewPager.setData(getContext(), pagerData, true);
+//        cyclingViewPager.setImageData(getContext(), pagerData, true);
 //        cyclingViewPager.setPointer(viewPointer, false);
 //        cyclingViewPager.setOnItemClickListener(new ImageViewPagerAdapter.OnItemClickListener() {
 //            @Override
@@ -113,6 +115,7 @@ public class MainFragment extends FoxFragment implements MainContract.View, Main
         mPresenter.requestPictures();
         cyclingViewPager.setCurrentItem(breakPosition);
         cyclingViewPager.beginCycling();
+        adapter.notifyDataSetChanged();
         checkNoData();
     }
 
@@ -189,6 +192,8 @@ public class MainFragment extends FoxFragment implements MainContract.View, Main
 
     @Override
     public void refresh(List<ImageBean> dataList) {
+        if (data != null)
+            data.clear();
         data = dataList;
         List<ImageBean> pagerData = new ArrayList<>();
         if (data == null || data.isEmpty()) {
@@ -203,6 +208,7 @@ public class MainFragment extends FoxFragment implements MainContract.View, Main
             }
         }
         cyclingViewPager.setData(getContext(), pagerData, true);
+        cyclingViewPager.notifyDataSetChanged();
         if (data != null && !data.isEmpty()) {
             cyclingViewPager.setPointer(viewPointer, false);
         }
@@ -219,12 +225,17 @@ public class MainFragment extends FoxFragment implements MainContract.View, Main
             }
         });
 
-        MainGalleryRecyclerViewAdapter adapter = new MainGalleryRecyclerViewAdapter(getContext(), data);
-        adapter.setOnItemClickListener(this);
-        rvGallery.setAdapter(adapter);
-        rvGallery.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        rvGallery.setNestedScrollingEnabled(false);
-        rvGallery.setOverScrollMode(View.OVER_SCROLL_IF_CONTENT_SCROLLS);
+        if (adapter == null) {
+            adapter = new MainGalleryRecyclerViewAdapter(getContext(), data);
+            adapter.setOnItemClickListener(this);
+            rvGallery.setAdapter(adapter);
+            rvGallery.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+            rvGallery.setNestedScrollingEnabled(false);
+            rvGallery.setOverScrollMode(View.OVER_SCROLL_IF_CONTENT_SCROLLS);
+        } else {
+            adapter.setDataList(data);
+            adapter.notifyDataSetChanged();
+        }
         checkNoData();
     }
 
@@ -250,6 +261,9 @@ public class MainFragment extends FoxFragment implements MainContract.View, Main
 
 //    RecyclerView子项点击事件↓
 
+    /**
+     * 图片点击
+     */
     @Override
     public void onImageClick(View target, int position) {
         final Intent intent = new Intent(getActivity(), PhotoDetailActivity.class);
@@ -260,10 +274,70 @@ public class MainFragment extends FoxFragment implements MainContract.View, Main
         ActivityTransitionLauncher.with(getActivity()).from(target).launch(intent);
     }
 
+    /**
+     * 图片更多点击
+     */
     @Override
-    public void onMoreClick(ImageBean bean) {
+    public void onMoreClick(View target, final ImageBean bean) {
 //        mPresenter.showDetail(bean);
-        getActivity().openOptionsMenu();
+        PopupMenu menu = new PopupMenu(getActivity(), target);
+        menu.getMenuInflater()
+                .inflate(R.menu.menu_photo_detail, menu.getMenu());
+        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case R.id.menu_delete:
+                        CustomDialogFragment.get(getContext())
+                                .title("请确认")
+                                .message("是否删除照片" + bean.getTitle() + "？")
+                                .positiveButton("是", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        DatabaseHelper.deletePicture(bean);
+                                        data.remove(bean);
+                                        mPresenter.deletePicture(bean);
+                                    }
+                                })
+                                .negativeButton("否", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                }).show(getFragmentManager());
+                        refresh(data);
+                        break;
+                    case R.id.menu_detail:
+                        onDetail(bean);
+                        break;
+                }
+                return true;
+            }
+        });
+        menu.show();
+    }
+
+    /**
+     * 进入详情
+     */
+    private void onDetail(final ImageBean bean) {
+        PictureDetailDialog.get(getActivity(), bean)
+                .negativeButton("修改", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ArrayList<String> pathList = new ArrayList<>();
+                        ArrayList<ImageBean> imageBeans = new ArrayList<>();
+                        pathList.add(bean.getPath());
+                        imageBeans.add(bean);
+                        final Intent intent = new Intent(getContext(), AddPhotoActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putStringArrayList("data", pathList);
+                        bundle.putParcelableArrayList("image_data", imageBeans);
+                        intent.putExtra("params", bundle);
+                        startActivity(intent);
+                    }
+                })
+                .show(getActivity().getSupportFragmentManager());
     }
 
     /**

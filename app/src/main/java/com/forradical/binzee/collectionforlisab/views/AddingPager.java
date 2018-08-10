@@ -33,7 +33,7 @@ public class AddingPager extends ViewPager {
         super(context, attrs);
     }
 
-    public void setData(@NonNull final FoxActivity ctx, final List<String> rawData){
+    public void setData(@NonNull final FoxActivity ctx, final List<String> rawData, final List<ImageBean> imageBeans){
         final List<String> data = new ArrayList<>();
 
         ctx.showLoadingDialog("请稍后", null);
@@ -66,6 +66,7 @@ public class AddingPager extends ViewPager {
                         Log.d("AddingPagerAdapter", "注销弹窗");
                         ctx.dismissDialog();
                         AddingPagerAdapter adapter = new AddingPagerAdapter(ctx, data);
+                        adapter.setImageData(imageBeans);
                         setAdapter(adapter);
                     }
                 });

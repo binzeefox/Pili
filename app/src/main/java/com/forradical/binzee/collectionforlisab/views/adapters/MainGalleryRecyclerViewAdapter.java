@@ -65,7 +65,7 @@ public class MainGalleryRecyclerViewAdapter extends RecyclerView.Adapter<MainGal
             public void onClick(View view) {
                 if (mListener == null)
                     return;
-                mListener.onMoreClick(bean);
+                mListener.onMoreClick(view, bean);
             }
         });
     }
@@ -79,6 +79,7 @@ public class MainGalleryRecyclerViewAdapter extends RecyclerView.Adapter<MainGal
      * 设置数据
      */
     public void setDataList(List<ImageBean> dataList) {
+        this.dataList.clear();
         this.dataList = dataList;
         notifyDataSetChanged();
     }
@@ -96,7 +97,7 @@ public class MainGalleryRecyclerViewAdapter extends RecyclerView.Adapter<MainGal
     public interface OnItemClickListener {
         void onImageClick(View target, int position);
 
-        void onMoreClick(ImageBean bean);
+        void onMoreClick(View target, ImageBean bean);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

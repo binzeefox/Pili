@@ -1,5 +1,8 @@
 package com.forradical.binzee.collectionforlisab.activities.photodetail;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -9,11 +12,17 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.forradical.binzee.collectionforlisab.R;
+import com.forradical.binzee.collectionforlisab.activities.addphoto.AddPhotoActivity;
 import com.forradical.binzee.collectionforlisab.base.FoxActivity;
 import com.forradical.binzee.collectionforlisab.base.litepal.ImageBean;
+import com.forradical.binzee.collectionforlisab.utils.DatabaseHelper;
+import com.forradical.binzee.collectionforlisab.utils.FileUtil;
+import com.forradical.binzee.collectionforlisab.views.PictureDetailDialog;
 import com.forradical.binzee.collectionforlisab.views.adapters.DetailViewPagerAdapter;
 import com.kogitune.activity_transition.ActivityTransition;
+import com.kogitune.activity_transition.ActivityTransitionLauncher;
 import com.kogitune.activity_transition.ExitActivityTransition;
+import com.zhihu.matisse.Matisse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,10 +114,65 @@ public class PhotoDetailActivity extends FoxActivity {
             onBackPressed();
         }
 
-        if (item.getItemId() == R.id.menu_more) {
-            //TODO 跳转至详情页
+        if (item.getItemId() == R.id.menu_detail) {
+            onDetail();
+        }
+
+        if (item.getItemId() == R.id.menu_delete) {
+            onDelete();
         }
         return true;
+    }
+
+    /**
+     * 进入详情
+     */
+    private void onDetail() {
+        int position = vpDetail.getCurrentItem();
+        final ImageBean bean = data.get(position);
+
+        PictureDetailDialog.get(this, bean)
+                .negativeButton("修改", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ArrayList<String> pathList = new ArrayList<>();
+                        ArrayList<ImageBean> imageBeans = new ArrayList<>();
+                        pathList.add(bean.getPath());
+                        imageBeans.add(bean);
+                        final Intent intent = new Intent(PhotoDetailActivity.this, AddPhotoActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putStringArrayList("data", pathList);
+                        bundle.putParcelableArrayList("image_data", imageBeans);
+                        intent.putExtra("params", bundle);
+                        startActivity(intent);
+                    }
+                })
+                .show(getSupportFragmentManager());
+    }
+
+    /**
+     * 删除图片
+     */
+    private void onDelete() {
+        int position = vpDetail.getCurrentItem();
+        final ImageBean bean = data.get(position);
+
+        getDialogHelper()
+                .title("请确认")
+                .message("是否删除照片" + bean.getTitle() + "？")
+                .positiveButton("是", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        DatabaseHelper.deletePicture(bean);
+                        finish();
+                    }
+                })
+                .negativeButton("否", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                }).show(getSupportFragmentManager());
     }
 
     @Override

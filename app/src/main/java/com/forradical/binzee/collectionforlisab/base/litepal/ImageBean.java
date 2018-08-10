@@ -10,9 +10,9 @@ import org.litepal.crud.LitePalSupport;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImageBean extends LitePalSupport implements Parcelable{
+public class ImageBean extends LitePalSupport implements Parcelable {
 
-    private static final String TYPE_DEFAULT = "type_default";
+    private static final String TYPE_DEFAULT = "默认分组";
 
     @Column(unique = true)
     private int id;
@@ -20,12 +20,17 @@ public class ImageBean extends LitePalSupport implements Parcelable{
     private String path;    // 图片路径
     private String netUrl;    // 网络路径
     private List<String> typeList = new ArrayList<>();    // 图片标签列表
-    private long createTime;    // 完成时间
+    private long createTime = -1;    // 完成时间
     private String comment;
+
+    public ImageBean() {
+
+    }
 
     public ImageBean(String path) {
         this.path = path;
-        typeList.add(TYPE_DEFAULT);
+        if (!typeList.contains(TYPE_DEFAULT))
+            typeList.add(TYPE_DEFAULT);
     }
 
     protected ImageBean(Parcel in) {
@@ -106,30 +111,34 @@ public class ImageBean extends LitePalSupport implements Parcelable{
 
     /**
      * 添加类别
-     * @param type  自定义类别
+     *
+     * @param type 自定义类别
      */
-    public void addType(String type){
-        typeList.add(type);
+    public void addType(String type) {
+        if (!typeList.contains(type))
+            typeList.add(type);
     }
 
     /**
      * 移除类别
-     * @param type  自定义类别
+     *
+     * @param type 自定义类别
      */
-    public void removeType(String type){
+    public void removeType(String type) {
         typeList.remove(type);
     }
 
     /**
      * 判断类别
-     * @param type  自定义类别
-     * @return  是否符合该类别
+     *
+     * @param type 自定义类别
+     * @return 是否符合该类别
      */
-    public boolean isMatchType(String type){
+    public boolean isMatchType(String type) {
         return typeList.contains(type);
     }
 
-    public void setId(int id){
+    public void setId(int id) {
         if (this.id >= 0)
             this.id = id;
     }

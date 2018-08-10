@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.forradical.binzee.collectionforlisab.R;
 import com.forradical.binzee.collectionforlisab.activities.main.MainActivity;
 import com.forradical.binzee.collectionforlisab.base.FoxApplication;
+import com.forradical.binzee.collectionforlisab.base.litepal.ImageBean;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -72,32 +73,14 @@ public class FileUtil {
 
     //    ****公共方法 ↓
 
-//    /**
-//     * 请求文件
-//     *
-//     * @param ctx  上下文
-//     * @param type 类别
-//     */
-//    public static void requestFile(Activity ctx, @NonNull String type) {
-//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//        intent.setType(type);
-//        intent.addCategory(Intent.CATEGORY_OPENABLE);
-//        ctx.startActivityForResult(intent, REQUEST_FILE);
-//    }
-//
-//    /**
-//     * 处理文件请求结果
-//     * @param requestCode 请求码
-//     * @param resultCode    结果码
-//     * @param data  数据
-//     * @return  文件
-//     */
-//    public static File handleFileResult(int requestCode, int resultCode, Intent data) {
-//        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_FILE) {
-//
-//        }
-//        return null;
-//    }
+    /**
+     * 删除数据
+     */
+    public static boolean deleteBeanFile(ImageBean bean) {
+        File file = new File(bean.getPath());
+        return !file.exists() || file.delete();
+    }
+
 
     /**
      * 将照片考入指定文件（若有同名文件则删除）

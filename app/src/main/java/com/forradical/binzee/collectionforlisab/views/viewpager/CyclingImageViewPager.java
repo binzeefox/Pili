@@ -86,7 +86,7 @@ public class CyclingImageViewPager extends ViewPager {
      */
     public void beginCycling(){
         if (mAdapter == null)
-//            throw new IllegalStateException("Call 'setData' first!!!");
+//            throw new IllegalStateException("Call 'setImageData' first!!!");
             return;
         timer = Observable
                 .interval(3000L, 4500L, TimeUnit.MILLISECONDS)
@@ -131,5 +131,9 @@ public class CyclingImageViewPager extends ViewPager {
         mPointer = pointer;
         mPointer.setUpViewPager(this, true);
         mPointer.setClickable(clickable);
+    }
+
+    public void notifyDataSetChanged(){
+        mAdapter.notifyDataSetChanged();
     }
 }

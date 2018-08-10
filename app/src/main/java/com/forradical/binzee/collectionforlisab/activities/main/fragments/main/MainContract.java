@@ -23,10 +23,12 @@ interface MainContract {
         void requestPictures();
         void showDetail(ImageBean bean);
         void addPicture(ImageBean bean);
+        void deletePicture(ImageBean bean);
     }
 
     interface Model extends IBaseModel{
         Observable<List<ImageBean>> getPictures();
         boolean addPicture(ImageBean bean);
+        void deletePicture(ImageBean bean);
     }
 }

@@ -27,6 +27,7 @@ import com.forradical.binzee.collectionforlisab.utils.ImageUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -60,6 +61,15 @@ public class AddingPagerAdapter extends PagerAdapter {
         }
     }
 
+    /**
+     * 设置数据
+     */
+    public void setImageData(List<ImageBean> data){
+        if (data == null)
+            return;
+        data.toArray(result);
+    }
+
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
@@ -82,11 +92,17 @@ public class AddingPagerAdapter extends PagerAdapter {
      */
     private void handleFields(TextInputEditText titleField
             , final Button createTimeBtn, EditText commentField, TagGroup tagGroupField, final int position) {
+        ImageBean bean = result[position];
 
         //标题
-        String[] pathSplit = pathList.get(position).split("/");
-        String name = pathSplit[pathSplit.length - 1];
-        titleField.setText(name);
+        if (bean.getTitle() != null){
+            titleField.setText(bean.getTitle());
+        } else {
+            String[] pathSplit = pathList.get(position).split("/");
+            String name = pathSplit[pathSplit.length - 1];
+            titleField.setText(name);
+            result[position].setTitle(name);
+        }
         titleField.addTextChangedListener(new CommonUtil.SimpleTextWatch() {
             @Override
             public void afterTextChanged(Editable editable) {
@@ -95,6 +111,9 @@ public class AddingPagerAdapter extends PagerAdapter {
         });
 
         //创建时间
+        if (bean.getCreateTime() != -1){
+            createTimeBtn.setText(DateUtil.millToDate(bean.getCreateTime()));
+        }
         createTimeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,6 +138,9 @@ public class AddingPagerAdapter extends PagerAdapter {
         });
 
         //备注
+        if (bean.getComment() != null) {
+            commentField.setText(bean.getComment());
+        }
         commentField.addTextChangedListener(new CommonUtil.SimpleTextWatch() {
             @Override
             public void afterTextChanged(Editable editable) {
@@ -127,6 +149,9 @@ public class AddingPagerAdapter extends PagerAdapter {
         });
 
         //标签
+        if (bean.getTypeList() != null){
+            tagGroupField.setTags(bean.getTypeList());
+        }
         tagGroupField.setOnTagChangeListener(new TagGroup.OnTagChangeListener() {
             @Override
             public void onAppend(TagGroup tagGroup, String tag) {

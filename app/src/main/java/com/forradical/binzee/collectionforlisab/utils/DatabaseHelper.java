@@ -100,6 +100,21 @@ public class DatabaseHelper {
         }).compose(RxHelp.<Integer>applySchedulers());
     }
 
+    /**
+     * 删除
+     */
+    public static void deletePicture(ImageBean bean){
+        FileUtil.deleteBeanFile(bean);
+        bean.delete();
+    }
+
+    /**
+     * 更新图片信息
+     */
+    public static void updatePicture(ImageBean bean){
+        bean.update(bean.getId());
+    }
+
 //    ******↓自定义异常
 
     public static class SaveImagesException extends Exception {

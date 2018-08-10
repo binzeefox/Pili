@@ -19,4 +19,9 @@ class Model implements MainContract.Model {
     public boolean addPicture(ImageBean bean) {
         return DatabaseHelper.saveImage(bean);
     }
+
+    @Override
+    public void deletePicture(ImageBean bean) {
+        DatabaseHelper.deletePicture(bean);
+    }
 }

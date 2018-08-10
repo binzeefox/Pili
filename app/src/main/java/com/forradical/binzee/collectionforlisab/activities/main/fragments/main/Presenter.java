@@ -55,4 +55,9 @@ class Presenter extends BasePresenter<MainContract.View, MainContract.Model> imp
         boolean isOkay = model.addPicture(bean);
         view.notice(isOkay ? "添加图片成功" : "添加图片失败");
     }
+
+    @Override
+    public void deletePicture(ImageBean bean) {
+        model.deletePicture(bean);
+    }
 }

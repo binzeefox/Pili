@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.ViewGroup;
@@ -24,7 +23,6 @@ import com.kogitune.activity_transition.ExitActivityTransition;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -40,6 +38,7 @@ public class AddPhotoActivity extends FoxActivity implements AddPhotoContract.Vi
     private ExitActivityTransition exitTransition;
     private Presenter mPresenter;
     private List<ImageBean> data;
+    private boolean isUpdate;
 
     @Override
     protected int onInflateLayout() {
@@ -51,11 +50,13 @@ public class AddPhotoActivity extends FoxActivity implements AddPhotoContract.Vi
         exitTransition = ActivityTransition.with(getIntent()).to(fabAdd).duration(175).start(savedInstanceState);
         mPresenter = new Presenter(this);
         List<String> rawData = mParams.getStringArrayList("data");
+        List<ImageBean> imageData = mParams.getParcelableArrayList("image_data");
+        isUpdate = imageData != null;
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        toolbar.setTitle("添加图片");
-        readyPagers(rawData);
+        toolbar.setTitle("图片详情");
+        readyPagers(rawData, imageData);
     }
 
     /**
@@ -63,7 +64,7 @@ public class AddPhotoActivity extends FoxActivity implements AddPhotoContract.Vi
      *
      * @param data 路径列表
      */
-    private void readyPagers(@Nullable List<String> data) {
+    private void readyPagers(@Nullable List<String> data, List<ImageBean> imageData) {
         if (data == null) {
             getDialogHelper()
                     .cancelable(false)
@@ -78,12 +79,16 @@ public class AddPhotoActivity extends FoxActivity implements AddPhotoContract.Vi
             return;
         }
         final int max = data.size();
-        getSupportActionBar().setTitle("添加图片\0(1/"+ max + ")");
-        addingPager.setData(this, data);
+        if (max == 1){
+            getSupportActionBar().setTitle("图片详情");
+        }else {
+            getSupportActionBar().setTitle("图片详情\0(1/" + max + ")");
+        }
+        addingPager.setData(this, data, imageData);
         addingPager.addOnPageChangeListener(new CommonUtil.SimpleOnPagerChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                toolbar.setTitle("添加图片\0("+ (position + 1) +"/"+ max + ")");
+                toolbar.setTitle("图片详情\0("+ (position + 1) +"/"+ max + ")");
             }
         });
     }
@@ -124,7 +129,13 @@ public class AddPhotoActivity extends FoxActivity implements AddPhotoContract.Vi
         AddingPagerAdapter adapter = addingPager.getAdapter();
         data = adapter.getSavingData();
         if (adapter.isFinished()){
-            mPresenter.savePhotos(data);
+            if (isUpdate) {
+                ImageBean bean = data.get(0);
+                bean.update(bean.getId());
+                finish();
+            } else {
+                mPresenter.savePhotos(data);
+            }
         }else {
             getDialogHelper()
                     .title("提示")

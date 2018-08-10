@@ -3,8 +3,12 @@
 
     <!--menu-->
     <string name="icon_menu_detail">详情</string>
+    <string name="icon_menu_delete">删除</string>
 
     <!--AddPhotoActivity-->
     <string name="adding_title_hint">请输入图片名称</string>
     <string name="main_fragment_data_holder">请添加您的第一张图片</string>
+    <string name="menu_card_delete">删除</string>
+    <string name="menu_card_detail">详情</string>
+    <string name="comment">备注：</string>
 </resources>
