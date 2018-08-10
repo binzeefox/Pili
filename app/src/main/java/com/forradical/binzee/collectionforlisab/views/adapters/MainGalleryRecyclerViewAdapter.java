@@ -18,14 +18,24 @@ import com.forradical.binzee.collectionforlisab.R;
 import com.forradical.binzee.collectionforlisab.base.litepal.ImageBean;
 import com.forradical.binzee.collectionforlisab.views.ResizableImageView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainGalleryRecyclerViewAdapter extends RecyclerView.Adapter<MainGalleryRecyclerViewAdapter.ViewHolder> {
     private List<ImageBean> dataList;
     private Context mContext;
     private OnItemClickListener mListener;
+    private List<Float> whRadius = new ArrayList<>();
 
     public MainGalleryRecyclerViewAdapter(Context context, List<ImageBean> datas) {
+        for (ImageBean bean : datas){
+            String path = bean.getPath();
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(path, options);
+            float radius = options.outWidth / options.outHeight;
+            whRadius.add(radius);
+        }
         mContext = context;
         dataList = datas;
     }
@@ -45,11 +55,7 @@ public class MainGalleryRecyclerViewAdapter extends RecyclerView.Adapter<MainGal
         holder.titleField.setText(title);
 
         String path = bean.getPath();
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(path, options);
-
-        float ratio = ((float) options.outWidth) / ((float) options.outHeight);
+        float ratio = whRadius.get(position);
         holder.imageField.setRatio(ratio);
         Glide.with(mContext).load(path).into(holder.imageField);
         holder.imageField.setOnClickListener(new View.OnClickListener() {
@@ -79,7 +85,8 @@ public class MainGalleryRecyclerViewAdapter extends RecyclerView.Adapter<MainGal
      * 设置数据
      */
     public void setDataList(List<ImageBean> dataList) {
-        this.dataList.clear();
+        if (this.dataList != null)
+            this.dataList.clear();
         this.dataList = dataList;
         notifyDataSetChanged();
     }
