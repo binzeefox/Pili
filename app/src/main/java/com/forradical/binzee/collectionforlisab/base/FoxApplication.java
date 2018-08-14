@@ -3,12 +3,19 @@ package com.forradical.binzee.collectionforlisab.base;
 import android.app.Activity;
 import android.app.Application;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 
+import com.forradical.binzee.collectionforlisab.base.litepal.ImageBean;
 import com.forradical.binzee.collectionforlisab.utils.ActivityCollector;
 import com.tencent.bugly.Bugly;
 
 import org.litepal.LitePal;
 import org.litepal.LitePalApplication;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -23,6 +30,8 @@ public class FoxApplication extends LitePalApplication {
     private static FoxApplication mInstance;
     public static Snackbar mSnackbar;
 
+    private static final List<ImageBean> fullList = new ArrayList<>();
+
     // 自定义Activity管理器
     private final static ActivityCollector mCollector = ActivityCollector.get();
 
@@ -36,6 +45,37 @@ public class FoxApplication extends LitePalApplication {
         mInstance = this;
         Bugly.init(this, APP_ID, true);
         LitePal.initialize(this);
+    }
+
+//    /**
+//     * 同步添加多条信息
+//     */
+//    public synchronized static void addImageBeans(ImageBean... imageBeans){
+//        fullList.addAll(Arrays.asList(imageBeans));
+//    }
+//
+//    /**
+//     * 同步删除信息
+//     */
+//    public synchronized static void removeImageBeans(ImageBean... imageBeans){
+//        fullList.removeAll(Arrays.asList(imageBeans));
+//    }
+//
+//    /**
+//     * 同步获取信息
+//     */
+//    public synchronized static ImageBean getFullListItem(int position){
+//        return fullList.get(position);
+//    }
+
+    /**
+     * 获取对象
+     */
+    public static List<ImageBean> getFullList(){
+        synchronized (fullList){
+            Log.d("FoxApplication", "fullList.size = " + fullList.size());
+            return fullList;
+        }
     }
 
     /**

@@ -33,43 +33,9 @@ public class AddingPager extends ViewPager {
         super(context, attrs);
     }
 
-    public void setData(@NonNull final FoxActivity ctx, final List<String> rawData, final List<ImageBean> imageBeans){
-        final List<String> data = new ArrayList<>();
-
-        ctx.showLoadingDialog("请稍后", null);
-        Observable.create(new ObservableOnSubscribe<Object>() {
-            @Override
-            public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
-                Log.d("AddingPagerAdapter", "处理图片");
-                for (String path : rawData) {
-                    String newPath = FileUtil.copyImage(new File(path));
-                    data.add(newPath);
-                }
-                Log.d("AddingPagerAdapter", "处理完成");
-                emitter.onComplete();
-            }
-        }).compose(RxHelp.applySchedulers())
-                .subscribe(new RxHelp.CompleteObserver<Object>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        ctx.dContainer.add(d);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        ctx.dismissDialog();
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d("AddingPagerAdapter", "注销弹窗");
-                        ctx.dismissDialog();
-                        AddingPagerAdapter adapter = new AddingPagerAdapter(ctx, data);
-                        adapter.setImageData(imageBeans);
-                        setAdapter(adapter);
-                    }
-                });
+    public void setData(@NonNull final FoxActivity ctx, final List<ImageBean> imageBeans){
+        AddingPagerAdapter adapter = new AddingPagerAdapter(ctx, imageBeans);
+        setAdapter(adapter);
     }
 
     @Nullable

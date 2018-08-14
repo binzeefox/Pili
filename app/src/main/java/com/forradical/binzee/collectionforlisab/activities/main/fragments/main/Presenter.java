@@ -2,9 +2,12 @@ package com.forradical.binzee.collectionforlisab.activities.main.fragments.main;
 
 import android.util.Log;
 
+import com.forradical.binzee.collectionforlisab.base.FoxActivity;
+import com.forradical.binzee.collectionforlisab.base.FoxApplication;
 import com.forradical.binzee.collectionforlisab.base.litepal.ImageBean;
 import com.forradical.binzee.collectionforlisab.base.mvp.BasePresenter;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Observer;
@@ -29,17 +32,22 @@ class Presenter extends BasePresenter<MainContract.View, MainContract.Model> imp
 
             @Override
             public void onNext(List<ImageBean> beanList) {
-                view.refresh(beanList);
-                Log.d("Presenter.java", "加载到的内容" + beanList.toString());
+                Collections.reverse(beanList);
+                FoxApplication.getFullList().clear();
+                FoxApplication.getFullList().addAll(beanList);
+                Log.d("MainFragment.Presenter", "onNext:" + beanList.toString());
+                view.refresh();
             }
 
             @Override
             public void onError(Throwable e) {
+                Log.d("MainFragment.Presenter", "onError:");
                 view.onLoaded();
             }
 
             @Override
             public void onComplete() {
+                Log.d("MainFragment.Presenter", "onComplete:");
                 view.onLoaded();
             }
         });

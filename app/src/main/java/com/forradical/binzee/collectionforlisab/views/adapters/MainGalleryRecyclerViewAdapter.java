@@ -15,29 +15,28 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.forradical.binzee.collectionforlisab.R;
+import com.forradical.binzee.collectionforlisab.base.FoxActivity;
 import com.forradical.binzee.collectionforlisab.base.litepal.ImageBean;
+import com.forradical.binzee.collectionforlisab.utils.RxHelp;
 import com.forradical.binzee.collectionforlisab.views.ResizableImageView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.disposables.Disposable;
+
 public class MainGalleryRecyclerViewAdapter extends RecyclerView.Adapter<MainGalleryRecyclerViewAdapter.ViewHolder> {
     private List<ImageBean> dataList;
-    private Context mContext;
+    private FoxActivity mContext;
     private OnItemClickListener mListener;
     private List<Float> whRadius = new ArrayList<>();
 
-    public MainGalleryRecyclerViewAdapter(Context context, List<ImageBean> datas) {
-        for (ImageBean bean : datas){
-            String path = bean.getPath();
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(path, options);
-            float radius = options.outWidth / options.outHeight;
-            whRadius.add(radius);
-        }
+    public MainGalleryRecyclerViewAdapter(FoxActivity context, final List<ImageBean> datas) {
         mContext = context;
-        dataList = datas;
+        setData(datas);
     }
 
     @NonNull
@@ -82,20 +81,44 @@ public class MainGalleryRecyclerViewAdapter extends RecyclerView.Adapter<MainGal
     }
 
     /**
-     * 设置数据
-     */
-    public void setDataList(List<ImageBean> dataList) {
-        if (this.dataList != null)
-            this.dataList.clear();
-        this.dataList = dataList;
-        notifyDataSetChanged();
-    }
-
-    /**
      * 子项点击事件监听器
      */
     public void setOnItemClickListener(OnItemClickListener listener) {
         mListener = listener;
+    }
+
+    /**
+     * 添加数据
+     */
+    public void setData(final List<ImageBean> data) {
+        Observable.create(new ObservableOnSubscribe<Object>() {
+            @Override
+            public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
+                if (data != null) {
+                    for (ImageBean bean : data) {
+                        String path = bean.getPath();
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inJustDecodeBounds = true;
+                        BitmapFactory.decodeFile(path, options);
+                        float radius = ((float) options.outWidth) / ((float)options.outHeight);
+                        whRadius.add(radius);
+                    }
+                }
+                emitter.onComplete();
+            }
+        }).compose(RxHelp.applySchedulers())
+                .subscribe(new RxHelp.CompleteObserver<Object>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        mContext.dContainer.add(d);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        dataList = data;
+                        notifyDataSetChanged();
+                    }
+                });
     }
 
     /**

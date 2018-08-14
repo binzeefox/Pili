@@ -24,6 +24,7 @@ import com.forradical.binzee.collectionforlisab.utils.CommonUtil;
 import com.forradical.binzee.collectionforlisab.utils.DateUtil;
 import com.forradical.binzee.collectionforlisab.utils.ImageUtil;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -36,15 +37,17 @@ import me.gujun.android.taggroup.TagGroup;
 
 public class AddingPagerAdapter extends PagerAdapter {
     private List<ViewGroup> viewList;   // 装有展示图片的部件
-    private final ImageBean[] result;
-    private List<String> pathList;
+    private ImageBean[] data;
+//    private List<ImageBean> data;
     private Context mContext;
 
-    public AddingPagerAdapter(final FoxActivity ctx, final List<String> pathList) {
+    public AddingPagerAdapter(final FoxActivity ctx, final List<ImageBean> rawData) {
         mContext = ctx;
-        result = new ImageBean[pathList.size()];
+        this.data = new ImageBean[rawData.size()];
+        rawData.toArray(this.data);
         viewList = new ArrayList<>();
-        this.pathList = pathList;
+//        this.rawData = pathList;
+
         convertViews(ctx);
     }
 
@@ -53,10 +56,8 @@ public class AddingPagerAdapter extends PagerAdapter {
      */
     private void convertViews(Activity ctx) {
         // 为每一张图片准备一个View
-        for (int i = 0; i < pathList.size(); i++) {
+        for (int i = 0; i < data.length; i++) {
             ViewGroup view = (ViewGroup) LayoutInflater.from(ctx).inflate(R.layout.adding_pager_adapter_layout, null);
-            String path = pathList.get(i);
-            result[i] = new ImageBean(path);
             viewList.add(view);
         }
     }
@@ -64,16 +65,15 @@ public class AddingPagerAdapter extends PagerAdapter {
     /**
      * 设置数据
      */
-    public void setImageData(List<ImageBean> data){
-        if (data == null)
-            return;
-        data.toArray(result);
+    public void setImageData(List<ImageBean> rawData){
+        data = new ImageBean[rawData.size()];
+        rawData.toArray(data);
     }
 
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        String path = pathList.get(position);
+        String path = data[position].getPath();
         ViewGroup view = viewList.get(position);
         container.addView(view);
         ImageView thumbField = view.findViewById(R.id.iv_adding_thumb);
@@ -92,21 +92,21 @@ public class AddingPagerAdapter extends PagerAdapter {
      */
     private void handleFields(TextInputEditText titleField
             , final Button createTimeBtn, EditText commentField, TagGroup tagGroupField, final int position) {
-        ImageBean bean = result[position];
+        ImageBean bean = data[position];
 
         //标题
         if (bean.getTitle() != null){
             titleField.setText(bean.getTitle());
         } else {
-            String[] pathSplit = pathList.get(position).split("/");
+            String[] pathSplit = data[position].getPath().split("/");
             String name = pathSplit[pathSplit.length - 1];
             titleField.setText(name);
-            result[position].setTitle(name);
+            data[position].setTitle(name);
         }
         titleField.addTextChangedListener(new CommonUtil.SimpleTextWatch() {
             @Override
             public void afterTextChanged(Editable editable) {
-                result[position].setTitle(editable.toString());
+                data[position].setTitle(editable.toString());
             }
         });
 
@@ -131,7 +131,7 @@ public class AddingPagerAdapter extends PagerAdapter {
                         month++;
                         String createDate = "" + year + "-" + month + "-" + day;
                         createTimeBtn.setText(createDate);
-                        result[position].setCreateTime(DateUtil.dateToMill(createDate));
+                        data[position].setCreateTime(DateUtil.dateToMill(createDate));
                     }
                 }, year, month, day).show();
             }
@@ -144,7 +144,7 @@ public class AddingPagerAdapter extends PagerAdapter {
         commentField.addTextChangedListener(new CommonUtil.SimpleTextWatch() {
             @Override
             public void afterTextChanged(Editable editable) {
-                result[position].setComment(editable.toString());
+                data[position].setComment(editable.toString());
             }
         });
 
@@ -156,13 +156,13 @@ public class AddingPagerAdapter extends PagerAdapter {
             @Override
             public void onAppend(TagGroup tagGroup, String tag) {
                 List<String> tagList = Arrays.asList(tagGroup.getTags());
-                result[position].getTypeList().addAll(tagList);
+                data[position].getTypeList().addAll(tagList);
             }
 
             @Override
             public void onDelete(TagGroup tagGroup, String tag) {
                 List<String> tagList = Arrays.asList(tagGroup.getTags());
-                result[position].getTypeList().addAll(tagList);
+                data[position].getTypeList().addAll(tagList);
             }
         });
     }
@@ -174,7 +174,7 @@ public class AddingPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return pathList.size();
+        return data.length;
     }
 
     @Override
@@ -186,14 +186,14 @@ public class AddingPagerAdapter extends PagerAdapter {
      * 获取所有处理过的信息
      */
     public List<ImageBean> getSavingData(){
-        return Arrays.asList(result);
+        return Arrays.asList(data);
     }
 
     /**
      * 返回是否全部处理过
      */
     public boolean isFinished(){
-        for (ImageBean bean : result){
+        for (ImageBean bean : data){
             if (bean.getTitle() == null){
                 return false;
             }

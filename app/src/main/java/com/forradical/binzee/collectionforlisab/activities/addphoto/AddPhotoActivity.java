@@ -49,23 +49,21 @@ public class AddPhotoActivity extends FoxActivity implements AddPhotoContract.Vi
     protected void create(Bundle savedInstanceState) {
         exitTransition = ActivityTransition.with(getIntent()).to(fabAdd).duration(175).start(savedInstanceState);
         mPresenter = new Presenter(this);
-        List<String> rawData = mParams.getStringArrayList("data");
         List<ImageBean> imageData = mParams.getParcelableArrayList("image_data");
-        isUpdate = imageData != null;
+        isUpdate = imageData.get(0).getTitle() != null ;
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         toolbar.setTitle("图片详情");
-        readyPagers(rawData, imageData);
+        readyPagers(imageData);
     }
 
     /**
      * 显示ViewPager内容
      *
-     * @param data 路径列表
      */
-    private void readyPagers(@Nullable List<String> data, List<ImageBean> imageData) {
-        if (data == null) {
+    private void readyPagers(List<ImageBean> imageData) {
+        if (imageData == null) {
             getDialogHelper()
                     .cancelable(false)
                     .title("错误")
@@ -78,13 +76,13 @@ public class AddPhotoActivity extends FoxActivity implements AddPhotoContract.Vi
                     }).show(getSupportFragmentManager());
             return;
         }
-        final int max = data.size();
+        final int max = imageData.size();
         if (max == 1){
             getSupportActionBar().setTitle("图片详情");
         }else {
             getSupportActionBar().setTitle("图片详情\0(1/" + max + ")");
         }
-        addingPager.setData(this, data, imageData);
+        addingPager.setData(this, imageData);
         addingPager.addOnPageChangeListener(new CommonUtil.SimpleOnPagerChangeListener() {
             @Override
             public void onPageSelected(int position) {

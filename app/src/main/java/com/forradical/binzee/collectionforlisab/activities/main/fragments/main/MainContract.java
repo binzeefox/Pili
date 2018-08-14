@@ -13,7 +13,7 @@ import io.reactivex.Observable;
 
 interface MainContract {
     interface View extends IBaseView{
-        void refresh(List<ImageBean> dataList);
+        void refresh();
         void notice(String text);
         void onLoading();
         void onLoaded();
