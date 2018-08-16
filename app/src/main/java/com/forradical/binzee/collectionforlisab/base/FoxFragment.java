@@ -40,7 +40,7 @@ public abstract class FoxFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
-        if (!dContainer.isDisposed())
+        if (dContainer != null && !dContainer.isDisposed())
             dContainer.dispose();
     }
 

@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -83,9 +84,11 @@ public abstract class FoxActivity extends AppCompatActivity {
         // 代理onCreate
         create(savedInstanceState);
         //Check and request permission
-        List<String> permissionList = getPermissionList(onCheckPermission());
-        if (permissionList != null)
-            requestSelfPermissions(checkSelfPermissions(permissionList));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            List<String> permissionList = getPermissionList(onCheckPermission());
+            if (permissionList != null)
+                requestSelfPermissions(checkSelfPermissions(permissionList));
+        }
     }
 
     @Override
