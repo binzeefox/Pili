@@ -27,6 +27,7 @@ public abstract class FoxFragment extends Fragment {
     public final View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = (ViewGroup) inflater.inflate(R.layout.fragment_base, container, false);
 
+        dContainer = new CompositeDisposable();
         View contentView = getLayoutInflater().inflate(onInflateLayout(), null);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams
                 (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

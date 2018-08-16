@@ -129,7 +129,7 @@ public class AddPhotoActivity extends FoxActivity implements AddPhotoContract.Vi
         if (adapter.isFinished()){
             if (isUpdate) {
                 ImageBean bean = data.get(0);
-                bean.update(bean.getId());
+                DatabaseHelper.updateImage(bean);
                 finish();
             } else {
                 mPresenter.savePhotos(data);

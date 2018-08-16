@@ -65,6 +65,7 @@ public class MainFragment extends FoxFragment implements MainContract.View, Main
 //    private List<ImageBean> data;
     private MainContract.Presenter mPresenter;
     private MainGalleryRecyclerViewAdapter adapter;
+    private List<ImageBean> preDataList = new ArrayList<>();
 
     @Override
     protected int onInflateLayout() {
@@ -75,6 +76,7 @@ public class MainFragment extends FoxFragment implements MainContract.View, Main
     protected void create(Bundle savedInstanceState) {
         mPresenter = new Presenter(this);
 //        data = FoxApplication.getFullList();
+
         mPresenter.requestPictures();
         adapter = new MainGalleryRecyclerViewAdapter((FoxActivity) getActivity(), FoxApplication.getFullList());
         adapter.setOnItemClickListener(this);
